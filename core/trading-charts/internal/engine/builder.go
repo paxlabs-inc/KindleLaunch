@@ -141,9 +141,9 @@ func (b *Builder) upsertCandleInTx(ctx context.Context, tx pgx.Tx, poolAddr, tim
 
 	var existing struct {
 		Open, High, Low, Close, VolumeUsdl, VolumeToken, BuyVol, SellVol string
-		TradeCount, UniqueTraders, LargeTrades                            int
-		SequenceNum                                                       int64
-		McapOpen, McapHigh, McapLow, McapClose                            string
+		TradeCount, UniqueTraders, LargeTrades                           int
+		SequenceNum                                                      int64
+		McapOpen, McapHigh, McapLow, McapClose                           string
 	}
 	err = row.Scan(
 		&existing.Open, &existing.High, &existing.Low, &existing.Close,

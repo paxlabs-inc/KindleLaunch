@@ -39,10 +39,10 @@ import (
 
 // App is a fully-wired, ready-to-run core/api gateway.
 type App struct {
-	Router  http.Handler
-	Broker  *broker.Broker
-	cfg     config.Config
-	logger  *slog.Logger
+	Router http.Handler
+	Broker *broker.Broker
+	cfg    config.Config
+	logger *slog.Logger
 
 	pool    *pgxpool.Pool
 	redis   *goredis.Client

@@ -117,8 +117,8 @@ func TestDispatch_RoutesByChannelAndPool(t *testing.T) {
 	}, 16)
 	defer sub.Close()
 
-	b.Dispatch(constants.ChannelSwap, swapPayload("0xAAA", 1)) // match
-	b.Dispatch(constants.ChannelSwap, swapPayload("0xBBB", 2)) // wrong pool
+	b.Dispatch(constants.ChannelSwap, swapPayload("0xAAA", 1))                             // match
+	b.Dispatch(constants.ChannelSwap, swapPayload("0xBBB", 2))                             // wrong pool
 	b.Dispatch(constants.ChannelCandleUpdate, candleUpdatePayload("0xAAA", "1m", 60, "1")) // wrong channel
 
 	got := sub.Drain()

@@ -37,7 +37,7 @@ type Broker struct {
 	byChannel map[string]map[*Subscription]struct{}
 	wildcard  map[*Subscription]struct{}
 
-	nextID  atomic.Uint64
+	nextID    atomic.Uint64
 	delivered atomic.Uint64
 	dropped   atomic.Uint64
 

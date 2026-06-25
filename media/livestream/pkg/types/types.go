@@ -89,8 +89,8 @@ type HeartbeatResponse struct {
 
 // WebhookPayload is the Livepeer webhook callback body (subset we act on).
 type WebhookPayload struct {
-	Event  string          `json:"event"`
-	Stream *WebhookStream  `json:"stream"`
+	Event  string         `json:"event"`
+	Stream *WebhookStream `json:"stream"`
 }
 
 // WebhookStream is the stream object inside a Livepeer webhook payload.

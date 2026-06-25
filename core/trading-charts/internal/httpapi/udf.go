@@ -10,8 +10,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"github.com/Sidiora-Technologies/KindleLaunch/shared/util"
 	sharedhttp "github.com/Sidiora-Technologies/KindleLaunch/shared/http"
+	"github.com/Sidiora-Technologies/KindleLaunch/shared/util"
 
 	"github.com/Sidiora-Technologies/KindleLaunch/core/trading-charts/internal/store"
 )
@@ -26,15 +26,15 @@ func RegisterUDF(r chi.Router, st *store.Store) {
 
 func udfConfig(w http.ResponseWriter, _ *http.Request) {
 	sharedhttp.WriteJSON(w, 200, map[string]interface{}{
-		"supports_search":           true,
-		"supports_group_request":    false,
-		"supports_marks":            false,
-		"supports_timescale_marks":  false,
-		"supports_time":             true,
-		"exchanges":                 []map[string]string{{"value": "sidiora", "name": "Sidiora", "desc": "Sidiora Launchpad"}},
-		"symbols_types":             []map[string]string{{"name": "token", "value": "token"}},
-		"supported_resolutions":     []string{"1", "5", "15", "60", "240", "1D", "1W"},
-		"currency_codes":            []map[string]string{{"id": "USDL", "code": "USDL", "description": "USDL Stablecoin"}},
+		"supports_search":          true,
+		"supports_group_request":   false,
+		"supports_marks":           false,
+		"supports_timescale_marks": false,
+		"supports_time":            true,
+		"exchanges":                []map[string]string{{"value": "sidiora", "name": "Sidiora", "desc": "Sidiora Launchpad"}},
+		"symbols_types":            []map[string]string{{"name": "token", "value": "token"}},
+		"supported_resolutions":    []string{"1", "5", "15", "60", "240", "1D", "1W"},
+		"currency_codes":           []map[string]string{{"id": "USDL", "code": "USDL", "description": "USDL Stablecoin"}},
 	})
 }
 
@@ -61,15 +61,15 @@ func udfSymbols(w http.ResponseWriter, r *http.Request) {
 
 func resolutionToTimeframe(resolution string) string {
 	m := map[string]string{
-		"1":  "1m",
-		"5":  "5m",
-		"15": "15m",
-		"60": "1h",
+		"1":   "1m",
+		"5":   "5m",
+		"15":  "15m",
+		"60":  "1h",
 		"240": "4h",
-		"1D": "1d",
-		"D":  "1d",
-		"1W": "1w",
-		"W":  "1w",
+		"1D":  "1d",
+		"D":   "1d",
+		"1W":  "1w",
+		"W":   "1w",
 	}
 	if tf, ok := m[resolution]; ok {
 		return tf

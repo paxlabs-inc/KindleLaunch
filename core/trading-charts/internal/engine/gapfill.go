@@ -32,11 +32,11 @@ func DetectAndFillGaps(ctx context.Context, pool *pgxpool.Pool, logger *slog.Log
 	defer rows.Close()
 
 	type cursor struct {
-		poolAddr       string
-		timeframe      string
-		lastClose      string
+		poolAddr        string
+		timeframe       string
+		lastClose       string
 		lastCandleStart int64
-		lastSeqNum     int64
+		lastSeqNum      int64
 	}
 	var cursors []cursor
 	for rows.Next() {
