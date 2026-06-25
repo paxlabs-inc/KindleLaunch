@@ -1,0 +1,202 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "MockOptical",
+  "sourceName": "contracts/test/MockOptical.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_poolRegistry",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_owner",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "NotOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotPool",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "afterFeeDistribution",
+      "outputs": [
+        {
+          "internalType": "bytes4",
+          "name": "",
+          "type": "bytes4"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "afterSwap",
+      "outputs": [
+        {
+          "internalType": "bytes4",
+          "name": "",
+          "type": "bytes4"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "feeAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "beforeFeeDistribution",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "adjustedFee",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "beforeSwap",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "proceed",
+          "type": "bool"
+        },
+        {
+          "internalType": "int256",
+          "name": "amountDelta",
+          "type": "int256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getFlags",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "poolRegistry",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x60c034607257601f6102f438819003918201601f19168301916001600160401b038311848410176077578084926040948552833981010312607257604b6020604583608d565b9201608d565b9060805260a05260405161025390816100a182396080518160eb015260a051816101990152f35b600080fd5b634e487b7160e01b600052604160045260246000fd5b51906001600160a01b038216820360725756fe608080604052600436101561001357600080fd5b60003560e01c9081636cc7149d146101c8575080638da5cb5b14610183578063ae3bd4bd14610157578063ae7e71d91461011a578063afcff50f146100d5578063f74c1c1a146100975763f80d2cc71461006c57600080fd5b34610092576040366003190112610092576100856101e2565b5060206040516024358152f35b600080fd5b346100925760a0366003190112610092576100b06101e2565b506100b96101f8565b506100c261020e565b50604051637ba60e0d60e11b8152602090f35b34610092576000366003190112610092576040517f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168152602090f35b34610092576080366003190112610092576101336101e2565b5061013c6101f8565b5061014561020e565b50604080516001815260006020820152f35b34610092576040366003190112610092576101706101e2565b5060405163ae3bd4bd60e01b8152602090f35b34610092576000366003190112610092576040517f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168152602090f35b346100925760003660031901126100925780600060209252f35b600435906001600160a01b038216820361009257565b602435906001600160a01b038216820361009257565b6044359081151582036100925756fea2646970667358221220dddfb1a65abaadb0b1cd6f1eb1c383836cb35af016e2a0def0db7eb24b0f0d8464736f6c634300081b0033",
+  "deployedBytecode": "0x608080604052600436101561001357600080fd5b60003560e01c9081636cc7149d146101c8575080638da5cb5b14610183578063ae3bd4bd14610157578063ae7e71d91461011a578063afcff50f146100d5578063f74c1c1a146100975763f80d2cc71461006c57600080fd5b34610092576040366003190112610092576100856101e2565b5060206040516024358152f35b600080fd5b346100925760a0366003190112610092576100b06101e2565b506100b96101f8565b506100c261020e565b50604051637ba60e0d60e11b8152602090f35b34610092576000366003190112610092576040517f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168152602090f35b34610092576080366003190112610092576101336101e2565b5061013c6101f8565b5061014561020e565b50604080516001815260006020820152f35b34610092576040366003190112610092576101706101e2565b5060405163ae3bd4bd60e01b8152602090f35b34610092576000366003190112610092576040517f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168152602090f35b346100925760003660031901126100925780600060209252f35b600435906001600160a01b038216820361009257565b602435906001600160a01b038216820361009257565b6044359081151582036100925756fea2646970667358221220dddfb1a65abaadb0b1cd6f1eb1c383836cb35af016e2a0def0db7eb24b0f0d8464736f6c634300081b0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

@@ -1,0 +1,10 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "PoolAddress",
+  "sourceName": "contracts/libraries/PoolAddress.sol",
+  "abi": [],
+  "bytecode": "0x60808060405234601757603a9081601d823930815050f35b600080fdfe600080fdfea26469706673582212206f241f14dd35508bf58812652747ae214725e9a8bba86814f25d8cabe5d9c48764736f6c634300081b0033",
+  "deployedBytecode": "0x600080fdfea26469706673582212206f241f14dd35508bf58812652747ae214725e9a8bba86814f25d8cabe5d9c48764736f6c634300081b0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

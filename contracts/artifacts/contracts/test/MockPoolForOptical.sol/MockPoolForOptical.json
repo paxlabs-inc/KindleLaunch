@@ -1,0 +1,114 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "MockPoolForOptical",
+  "sourceName": "contracts/test/MockPoolForOptical.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "creationTimestamp",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getEffectiveReserves",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getReserves",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "virtualUsdl",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "realUsdl",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenRes",
+          "type": "uint256"
+        }
+      ],
+      "name": "setReserves",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "setTokenAddress",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "tokenAddress",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608080604052346015576101bc908161001b8239f35b600080fdfe608080604052600436101561001357600080fd5b60003560e01c9081630902f1ac1461015a5750806326a4e8d2146101175780636e7f1e46146100cf578063713f2621146100aa5780639d76ea58146100815763b33110861461006157600080fd5b3461007c57600036600319011261007c576020604051428152f35b600080fd5b3461007c57600036600319011261007c576003546040516001600160a01b039091168152602090f35b3461007c57606036600319011261007c57600435600055602435600155604435600255005b3461007c57600036600319011261007c5760005460015481018091116101015760409060025482519182526020820152f35b634e487b7160e01b600052601160045260246000fd5b3461007c57602036600319011261007c576004356001600160a01b0381169081900361007c576bffffffffffffffffffffffff60a01b6003541617600355600080f35b3461007c57600036600319011261007c5760609060005460015460025491835260208301526040820152f3fea264697066735822122029e8bd4bdae559d07f52efd1a625cc0d21a84f30b731af9f02f48d0ac4b1e4f364736f6c634300081b0033",
+  "deployedBytecode": "0x608080604052600436101561001357600080fd5b60003560e01c9081630902f1ac1461015a5750806326a4e8d2146101175780636e7f1e46146100cf578063713f2621146100aa5780639d76ea58146100815763b33110861461006157600080fd5b3461007c57600036600319011261007c576020604051428152f35b600080fd5b3461007c57600036600319011261007c576003546040516001600160a01b039091168152602090f35b3461007c57606036600319011261007c57600435600055602435600155604435600255005b3461007c57600036600319011261007c5760005460015481018091116101015760409060025482519182526020820152f35b634e487b7160e01b600052601160045260246000fd5b3461007c57602036600319011261007c576004356001600160a01b0381169081900361007c576bffffffffffffffffffffffff60a01b6003541617600355600080f35b3461007c57600036600319011261007c5760609060005460015460025491835260208301526040820152f3fea264697066735822122029e8bd4bdae559d07f52efd1a625cc0d21a84f30b731af9f02f48d0ac4b1e4f364736f6c634300081b0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

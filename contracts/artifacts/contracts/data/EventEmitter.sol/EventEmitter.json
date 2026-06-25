@@ -1,0 +1,5114 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "EventEmitter",
+  "sourceName": "contracts/data/EventEmitter.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "AlreadyInitialized",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidImplementation",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InvalidImplementation",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        }
+      ],
+      "name": "MissingRole",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotInitializing",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "UUPSNotThroughActiveProxy",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "UUPSNotThroughProxy",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "Unauthorized",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "UnauthorizedUpgrade",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "asset",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "spender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "valueOrTokenId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "isNft",
+          "type": "bool"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "AssetApproval",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "tokenIn",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "tokenOut",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "routeId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountOut",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address[]",
+          "name": "hops",
+          "type": "address[]"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "protocolFeeBps",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "BestRouteSwap",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "sourceId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "reportedPrice",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "referencePrice",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "deviationBps",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "CircuitBreakerTriggered",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "key",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "oldValue",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "newValue",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "ConfigUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "proxy",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newImplementation",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "kind",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "ContractUpgraded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "msgSender",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "eventNameHash",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "eventName",
+          "type": "string"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "address",
+                      "name": "value",
+                      "type": "address"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.AddressKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "address[]",
+                      "name": "value",
+                      "type": "address[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.AddressArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.AddressItems",
+              "name": "addressItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "value",
+                      "type": "uint256"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.UintKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "uint256[]",
+                      "name": "value",
+                      "type": "uint256[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.UintArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.UintItems",
+              "name": "uintItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "int256",
+                      "name": "value",
+                      "type": "int256"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.IntKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "int256[]",
+                      "name": "value",
+                      "type": "int256[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.IntArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.IntItems",
+              "name": "intItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bool",
+                      "name": "value",
+                      "type": "bool"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BoolKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bool[]",
+                      "name": "value",
+                      "type": "bool[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BoolArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.BoolItems",
+              "name": "boolItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes32",
+                      "name": "value",
+                      "type": "bytes32"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.Bytes32KeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes32[]",
+                      "name": "value",
+                      "type": "bytes32[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.Bytes32ArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.Bytes32Items",
+              "name": "bytes32Items",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes",
+                      "name": "value",
+                      "type": "bytes"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BytesKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes[]",
+                      "name": "value",
+                      "type": "bytes[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BytesArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.BytesItems",
+              "name": "bytesItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "string",
+                      "name": "value",
+                      "type": "string"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.StringKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "string[]",
+                      "name": "value",
+                      "type": "string[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.StringArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.StringItems",
+              "name": "stringItems",
+              "type": "tuple"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IEventEmitter.EventData",
+          "name": "eventData",
+          "type": "tuple"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "EventLog",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "msgSender",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "eventNameHash",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "topic1",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "eventName",
+          "type": "string"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "address",
+                      "name": "value",
+                      "type": "address"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.AddressKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "address[]",
+                      "name": "value",
+                      "type": "address[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.AddressArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.AddressItems",
+              "name": "addressItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "value",
+                      "type": "uint256"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.UintKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "uint256[]",
+                      "name": "value",
+                      "type": "uint256[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.UintArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.UintItems",
+              "name": "uintItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "int256",
+                      "name": "value",
+                      "type": "int256"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.IntKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "int256[]",
+                      "name": "value",
+                      "type": "int256[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.IntArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.IntItems",
+              "name": "intItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bool",
+                      "name": "value",
+                      "type": "bool"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BoolKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bool[]",
+                      "name": "value",
+                      "type": "bool[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BoolArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.BoolItems",
+              "name": "boolItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes32",
+                      "name": "value",
+                      "type": "bytes32"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.Bytes32KeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes32[]",
+                      "name": "value",
+                      "type": "bytes32[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.Bytes32ArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.Bytes32Items",
+              "name": "bytes32Items",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes",
+                      "name": "value",
+                      "type": "bytes"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BytesKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes[]",
+                      "name": "value",
+                      "type": "bytes[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BytesArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.BytesItems",
+              "name": "bytesItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "string",
+                      "name": "value",
+                      "type": "string"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.StringKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "string[]",
+                      "name": "value",
+                      "type": "string[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.StringArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.StringItems",
+              "name": "stringItems",
+              "type": "tuple"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IEventEmitter.EventData",
+          "name": "eventData",
+          "type": "tuple"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "EventLog1",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "msgSender",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "eventNameHash",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "topic1",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "topic2",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "eventName",
+          "type": "string"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "address",
+                      "name": "value",
+                      "type": "address"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.AddressKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "address[]",
+                      "name": "value",
+                      "type": "address[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.AddressArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.AddressItems",
+              "name": "addressItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "value",
+                      "type": "uint256"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.UintKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "uint256[]",
+                      "name": "value",
+                      "type": "uint256[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.UintArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.UintItems",
+              "name": "uintItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "int256",
+                      "name": "value",
+                      "type": "int256"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.IntKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "int256[]",
+                      "name": "value",
+                      "type": "int256[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.IntArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.IntItems",
+              "name": "intItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bool",
+                      "name": "value",
+                      "type": "bool"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BoolKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bool[]",
+                      "name": "value",
+                      "type": "bool[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BoolArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.BoolItems",
+              "name": "boolItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes32",
+                      "name": "value",
+                      "type": "bytes32"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.Bytes32KeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes32[]",
+                      "name": "value",
+                      "type": "bytes32[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.Bytes32ArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.Bytes32Items",
+              "name": "bytes32Items",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes",
+                      "name": "value",
+                      "type": "bytes"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BytesKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes[]",
+                      "name": "value",
+                      "type": "bytes[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BytesArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.BytesItems",
+              "name": "bytesItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "string",
+                      "name": "value",
+                      "type": "string"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.StringKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "string[]",
+                      "name": "value",
+                      "type": "string[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.StringArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.StringItems",
+              "name": "stringItems",
+              "type": "tuple"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IEventEmitter.EventData",
+          "name": "eventData",
+          "type": "tuple"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "EventLog2",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "poolId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "nftId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "strategy",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "FeeDistributed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint8",
+          "name": "kind",
+          "type": "uint8"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "party",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "protocolCut",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "poolCut",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "epoch",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "FeeFlow",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "poolId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "feeAmount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "protocolCut",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "poolCut",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "FeeRecorded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "poolId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "nftId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "oldStrategy",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "newStrategy",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "FeeStrategyChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint8",
+          "name": "action",
+          "type": "uint8"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "id",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "actor",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes",
+          "name": "payload",
+          "type": "bytes"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "Governance",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "version",
+          "type": "uint64"
+        }
+      ],
+      "name": "Initialized",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "poolId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "optical",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "MarketCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "strategy",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "NftMint",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "nft",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "NftTransfer",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "poolId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "optical",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "hookName",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "OpticalExecuted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint8",
+          "name": "action",
+          "type": "uint8"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "optical",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "name",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes",
+          "name": "payload",
+          "type": "bytes"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "OpticalLifecycle",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "sourceId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "adapter",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "phase",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "priority",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "OracleAdapterLifecycle",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "pausedContract",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "paused",
+          "type": "bool"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "PauseToggle",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "orderId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "orderKind",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "orderType",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "tokenIn",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "tokenOut",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "targetPrice",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "stopPrice",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "limitPrice",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "PecorOrderCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "orderId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "orderKind",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "phase",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes",
+          "name": "payload",
+          "type": "bytes"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "PecorOrderLifecycle",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "tokenIn",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "tokenOut",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountOut",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "priceIn",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "priceOut",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "volumeUSD",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "feeBps",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "feeAmount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "impactBps",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "swapKind",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "PecorSwap",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "optical",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "nftId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "PoolRegistered",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "poolId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "virtualReserve",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "realReserve",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "tokenReserve",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "PoolStateUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "roundId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "relayer",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "confidence",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "sourceId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "PriceUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "previousAdminRole",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "newAdminRole",
+          "type": "bytes32"
+        }
+      ],
+      "name": "RoleAdminChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint8",
+          "name": "action",
+          "type": "uint8"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "previousAdminRole",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "RoleChange",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
+      "name": "RoleGranted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
+      "name": "RoleRevoked",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint8",
+          "name": "kind",
+          "type": "uint8"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "tokenIn",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "tokenOut",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountOut",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "intermediateUsdl",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "RouterTrade",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "poolId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "isBuy",
+          "type": "bool"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountOut",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "fee",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "Swap",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes32",
+          "name": "salt",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "symbol",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "decimals",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "totalSupply",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "TokenDeployed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "TokenTransfer",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint8",
+          "name": "direction",
+          "type": "uint8"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "party",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "TreasuryFlow",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "implementation",
+          "type": "address"
+        }
+      ],
+      "name": "Upgraded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint8",
+          "name": "flowType",
+          "type": "uint8"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "party",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "newReserve",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "blockNumber",
+          "type": "uint256"
+        }
+      ],
+      "name": "VaultFlow",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "DEFAULT_ADMIN_ROLE",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "EMITTER_ADMIN_ROLE",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "EVENT_EMITTER_ROLE",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "VERSION",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "deregisterToken",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "asset",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "spender",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "valueOrTokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "isNft",
+          "type": "bool"
+        }
+      ],
+      "name": "emitAssetApproval",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "tokenIn",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "tokenOut",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "routeId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amountOut",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address[]",
+          "name": "hops",
+          "type": "address[]"
+        },
+        {
+          "internalType": "uint256",
+          "name": "protocolFeeBps",
+          "type": "uint256"
+        }
+      ],
+      "name": "emitBestRouteSwap",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "sourceId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "reportedPrice",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "referencePrice",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "deviationBps",
+          "type": "uint256"
+        }
+      ],
+      "name": "emitCircuitBreaker",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "key",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "oldValue",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "newValue",
+          "type": "uint256"
+        }
+      ],
+      "name": "emitConfigUpdated",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "eventName",
+          "type": "string"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "address",
+                      "name": "value",
+                      "type": "address"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.AddressKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "address[]",
+                      "name": "value",
+                      "type": "address[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.AddressArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.AddressItems",
+              "name": "addressItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "value",
+                      "type": "uint256"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.UintKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "uint256[]",
+                      "name": "value",
+                      "type": "uint256[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.UintArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.UintItems",
+              "name": "uintItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "int256",
+                      "name": "value",
+                      "type": "int256"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.IntKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "int256[]",
+                      "name": "value",
+                      "type": "int256[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.IntArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.IntItems",
+              "name": "intItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bool",
+                      "name": "value",
+                      "type": "bool"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BoolKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bool[]",
+                      "name": "value",
+                      "type": "bool[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BoolArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.BoolItems",
+              "name": "boolItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes32",
+                      "name": "value",
+                      "type": "bytes32"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.Bytes32KeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes32[]",
+                      "name": "value",
+                      "type": "bytes32[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.Bytes32ArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.Bytes32Items",
+              "name": "bytes32Items",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes",
+                      "name": "value",
+                      "type": "bytes"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BytesKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes[]",
+                      "name": "value",
+                      "type": "bytes[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BytesArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.BytesItems",
+              "name": "bytesItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "string",
+                      "name": "value",
+                      "type": "string"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.StringKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "string[]",
+                      "name": "value",
+                      "type": "string[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.StringArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.StringItems",
+              "name": "stringItems",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct IEventEmitter.EventData",
+          "name": "data",
+          "type": "tuple"
+        }
+      ],
+      "name": "emitEventLog",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "eventName",
+          "type": "string"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "topic1",
+          "type": "bytes32"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "address",
+                      "name": "value",
+                      "type": "address"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.AddressKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "address[]",
+                      "name": "value",
+                      "type": "address[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.AddressArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.AddressItems",
+              "name": "addressItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "value",
+                      "type": "uint256"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.UintKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "uint256[]",
+                      "name": "value",
+                      "type": "uint256[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.UintArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.UintItems",
+              "name": "uintItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "int256",
+                      "name": "value",
+                      "type": "int256"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.IntKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "int256[]",
+                      "name": "value",
+                      "type": "int256[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.IntArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.IntItems",
+              "name": "intItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bool",
+                      "name": "value",
+                      "type": "bool"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BoolKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bool[]",
+                      "name": "value",
+                      "type": "bool[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BoolArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.BoolItems",
+              "name": "boolItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes32",
+                      "name": "value",
+                      "type": "bytes32"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.Bytes32KeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes32[]",
+                      "name": "value",
+                      "type": "bytes32[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.Bytes32ArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.Bytes32Items",
+              "name": "bytes32Items",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes",
+                      "name": "value",
+                      "type": "bytes"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BytesKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes[]",
+                      "name": "value",
+                      "type": "bytes[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BytesArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.BytesItems",
+              "name": "bytesItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "string",
+                      "name": "value",
+                      "type": "string"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.StringKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "string[]",
+                      "name": "value",
+                      "type": "string[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.StringArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.StringItems",
+              "name": "stringItems",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct IEventEmitter.EventData",
+          "name": "data",
+          "type": "tuple"
+        }
+      ],
+      "name": "emitEventLog1",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "eventName",
+          "type": "string"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "topic1",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "topic2",
+          "type": "bytes32"
+        },
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "address",
+                      "name": "value",
+                      "type": "address"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.AddressKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "address[]",
+                      "name": "value",
+                      "type": "address[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.AddressArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.AddressItems",
+              "name": "addressItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "uint256",
+                      "name": "value",
+                      "type": "uint256"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.UintKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "uint256[]",
+                      "name": "value",
+                      "type": "uint256[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.UintArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.UintItems",
+              "name": "uintItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "int256",
+                      "name": "value",
+                      "type": "int256"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.IntKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "int256[]",
+                      "name": "value",
+                      "type": "int256[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.IntArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.IntItems",
+              "name": "intItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bool",
+                      "name": "value",
+                      "type": "bool"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BoolKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bool[]",
+                      "name": "value",
+                      "type": "bool[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BoolArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.BoolItems",
+              "name": "boolItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes32",
+                      "name": "value",
+                      "type": "bytes32"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.Bytes32KeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes32[]",
+                      "name": "value",
+                      "type": "bytes32[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.Bytes32ArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.Bytes32Items",
+              "name": "bytes32Items",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes",
+                      "name": "value",
+                      "type": "bytes"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BytesKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "bytes[]",
+                      "name": "value",
+                      "type": "bytes[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.BytesArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.BytesItems",
+              "name": "bytesItems",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "string",
+                      "name": "value",
+                      "type": "string"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.StringKeyValue[]",
+                  "name": "items",
+                  "type": "tuple[]"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "string",
+                      "name": "key",
+                      "type": "string"
+                    },
+                    {
+                      "internalType": "string[]",
+                      "name": "value",
+                      "type": "string[]"
+                    }
+                  ],
+                  "internalType": "struct IEventEmitter.StringArrayKeyValue[]",
+                  "name": "arrayItems",
+                  "type": "tuple[]"
+                }
+              ],
+              "internalType": "struct IEventEmitter.StringItems",
+              "name": "stringItems",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct IEventEmitter.EventData",
+          "name": "data",
+          "type": "tuple"
+        }
+      ],
+      "name": "emitEventLog2",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "poolId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "nftId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint8",
+          "name": "strategy",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        }
+      ],
+      "name": "emitFeeDistributed",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "kind",
+          "type": "uint8"
+        },
+        {
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "party",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "protocolCut",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "poolCut",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "epoch",
+          "type": "uint256"
+        }
+      ],
+      "name": "emitFeeFlow",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "poolId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "feeAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "protocolCut",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "poolCut",
+          "type": "uint256"
+        }
+      ],
+      "name": "emitFeeRecorded",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "poolId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "nftId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint8",
+          "name": "oldStrategy",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint8",
+          "name": "newStrategy",
+          "type": "uint8"
+        }
+      ],
+      "name": "emitFeeStrategyChanged",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "action",
+          "type": "uint8"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "id",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "actor",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes",
+          "name": "payload",
+          "type": "bytes"
+        }
+      ],
+      "name": "emitGovernance",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "poolId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "optical",
+          "type": "address"
+        }
+      ],
+      "name": "emitMarketCreated",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "internalType": "uint8",
+          "name": "strategy",
+          "type": "uint8"
+        }
+      ],
+      "name": "emitNftMint",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "nft",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "emitNftTransfer",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "poolId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "optical",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "hookName",
+          "type": "string"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "emitOpticalExecuted",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "action",
+          "type": "uint8"
+        },
+        {
+          "internalType": "address",
+          "name": "optical",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "name",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes",
+          "name": "payload",
+          "type": "bytes"
+        }
+      ],
+      "name": "emitOpticalLifecycle",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "sourceId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "adapter",
+          "type": "address"
+        },
+        {
+          "internalType": "uint8",
+          "name": "phase",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "priority",
+          "type": "uint256"
+        }
+      ],
+      "name": "emitOracleAdapterLifecycle",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "pausedContract",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "paused",
+          "type": "bool"
+        }
+      ],
+      "name": "emitPauseToggle",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "orderId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "internalType": "uint8",
+          "name": "orderKind",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint8",
+          "name": "orderType",
+          "type": "uint8"
+        },
+        {
+          "internalType": "address",
+          "name": "tokenIn",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "tokenOut",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "targetPrice",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "stopPrice",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "limitPrice",
+          "type": "uint256"
+        }
+      ],
+      "name": "emitPecorOrderCreated",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "orderId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "internalType": "uint8",
+          "name": "orderKind",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint8",
+          "name": "phase",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "payload",
+          "type": "bytes"
+        }
+      ],
+      "name": "emitPecorOrderLifecycle",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "user",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "tokenIn",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "tokenOut",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amountOut",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "priceIn",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "priceOut",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "volumeUSD",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "feeBps",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "feeAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "impactBps",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint8",
+          "name": "swapKind",
+          "type": "uint8"
+        }
+      ],
+      "name": "emitPecorSwap",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "optical",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "nftId",
+          "type": "uint256"
+        }
+      ],
+      "name": "emitPoolRegistered",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "poolId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "virtualReserve",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "realReserve",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenReserve",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        }
+      ],
+      "name": "emitPoolStateUpdated",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "roundId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "relayer",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "confidence",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "sourceId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "emitPriceUpdated",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "action",
+          "type": "uint8"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "previousAdminRole",
+          "type": "bytes32"
+        }
+      ],
+      "name": "emitRoleChange",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "kind",
+          "type": "uint8"
+        },
+        {
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "tokenIn",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "tokenOut",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amountOut",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "intermediateUsdl",
+          "type": "uint256"
+        }
+      ],
+      "name": "emitRouterTrade",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "poolId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "isBuy",
+          "type": "bool"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amountOut",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "fee",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        }
+      ],
+      "name": "emitSwap",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "salt",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "symbol",
+          "type": "string"
+        },
+        {
+          "internalType": "uint8",
+          "name": "decimals",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "totalSupply",
+          "type": "uint256"
+        }
+      ],
+      "name": "emitTokenDeployed",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "emitTokenTransfer",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "direction",
+          "type": "uint8"
+        },
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "party",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "emitTreasuryFlow",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "proxy",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "newImplementation",
+          "type": "address"
+        },
+        {
+          "internalType": "uint8",
+          "name": "kind",
+          "type": "uint8"
+        }
+      ],
+      "name": "emitUpgraded",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint8",
+          "name": "flowType",
+          "type": "uint8"
+        },
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "party",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "newReserve",
+          "type": "uint256"
+        }
+      ],
+      "name": "emitVaultFlow",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getRoleAdmin",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "grantRole",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "hasRole",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_admin",
+          "type": "address"
+        }
+      ],
+      "name": "initialize",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "emitter",
+          "type": "address"
+        }
+      ],
+      "name": "isAuthorizedEmitter",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "isRegisteredToken",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "metaAGRouter",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "opticalRegistry",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "poolRegistry",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "proxiableUUID",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "registerToken",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "adminWithEmitterRole",
+          "type": "address"
+        }
+      ],
+      "name": "reinitializeV2",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "callerConfirmation",
+          "type": "address"
+        }
+      ],
+      "name": "renounceRole",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "revokeRole",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "emitter",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "authorized",
+          "type": "bool"
+        }
+      ],
+      "name": "setAuthorizedEmitter",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "router",
+          "type": "address"
+        }
+      ],
+      "name": "setMetaAGRouter",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "registry",
+          "type": "address"
+        }
+      ],
+      "name": "setOpticalRegistry",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_poolRegistry",
+          "type": "address"
+        }
+      ],
+      "name": "setPoolRegistry",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "factory",
+          "type": "address"
+        }
+      ],
+      "name": "setSidioraFactory",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "setTokenRegistry",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "sidioraFactory",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newImplementation",
+          "type": "address"
+        },
+        {
+          "internalType": "bytes",
+          "name": "data",
+          "type": "bytes"
+        }
+      ],
+      "name": "upgradeToAndCall",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x60a080604052346100c557306080526000805160206136488339815191525460ff8160401c166100b5576002600160401b03196001600160401b03821601610061575b60405161357d90816100cb82396080518181816119330152611a7e0152f35b6001600160401b0319166001600160401b039081176000805160206136488339815191525581527fc7f505b2f371ae2175ee4913f4499e1f2633a7b5936321eed1cdaeb6115181d290602090a13880610042565b62dc149f60e41b60005260046000fd5b600080fdfe6080604052600436101561001257600080fd5b60003560e01c806306a7cedb146123b1578063100fca4f14612314578063176af80c146122945780631a7a34ef146121c9578063248a9ca31461219457806324de01e4146120e557806325b14c331461204a57806327b8171814611fa45780632f2ff15d14611f6457806335a5af9214611ef657806336568abe14611ea75780633711424714611e1f5780633cced65314611d0f5780634739f7e514611c435780634f1ef28614611a375780634f2bdd091461199c57806352d1902d1461192057806363d163631461184457806366706fd21461180557806373b5708c146117dc57806375c480381461174f5780637639a230146117105780637944994b146116325780637b77cd6a146115ee57806382b678c31461153057806385ceceb5146114c2578063906c49f61461141557806391d14854146113c857806398616097146113195780639de5933b1461128a5780639e4a40ca146111f3578063a217fddf146111d7578063a6df9eea146110f7578063afcff50f146110ce578063b182ba64146110a5578063b2c8dc7214611027578063b3defa3c14610f2f578063bab2af1d14610ea3578063be6b99e314610ded578063c2d11c3814610db2578063c4d66de814610c6e578063c6770db614610bff578063cdc0fc6114610b6c578063d08aa55f14610adb578063d475632514610a06578063d4925be514610990578063d547741f14610947578063d6278d9c146108be578063d6d2820014610848578063d7056c201461081f578063de2b776414610792578063e3cdc125146106d8578063e4617ca514610640578063e53122ec146105b3578063eeaf8bcd14610544578063f4795b2614610491578063fa0dced914610468578063fa2e1d5e146103c0578063fa78f4ca146103315763ffa1ad74146102b057600080fd5b3461032c57600036600319011261032c5760408051906102d08183612537565b60058252640322e302e360dc1b6020830152805180926020825280519081602084015260005b8281106103155750506000828201840152601f01601f19168101030190f35b6020828201810151878301870152869450016102f6565b600080fd5b3461032c5760a036600319011261032c5761034b3361309b565b156103b05760408051602435815260443560208201526064359181019190915260843560608201524260808201524360a0820152600435907f8155a4b38a877d212b271811786986f8f7d78074c82fce4526c58defcc6d7ebd908060c081015b0390a2005b6282b42960e81b60005260046000fd5b3461032c5760e036600319011261032c576103d961245c565b6103e1612482565b906103ea6124ae565b6103f33361309b565b156103b057604080516064358152608435602082015260a4359181019190915260c43560608201524260808201524360a08201526001600160a01b03918216939091169160ff16907f626e3fd5d9323ca4b7ffa3ca51c21c02766b638d15eb8896a36a4e0e97ae6de4908060c081015b0390a4005b3461032c57600036600319011261032c576004546040516001600160a01b039091168152602090f35b3461032c57602036600319011261032c576104aa612498565b336000908152600080516020613528833981519152602052604090205460ff16158061051d575b6104f757600480546001600160a01b0319166001600160a01b0392909216919091179055005b62b0d32560e11b600052336004526000805160206134c883398151915260245260446000fd5b50336000908152600080516020613508833981519152602052604090205460ff16156104d1565b3461032c57610552366125c0565b9061055f9392933361309b565b156103b0576040805192835242602084015243908301526001600160a01b039081169381169216907f021f03e8a1315704c74c03e8c022c12bc80c4a2bd4fec8bd36b217322c340ad3908060608101610463565b3461032c57602036600319011261032c576105cc612498565b336000908152600080516020613528833981519152602052604090205460ff161580610619575b6104f757600580546001600160a01b0319166001600160a01b0392909216919091179055005b50336000908152600080516020613508833981519152602052604090205460ff16156105f3565b3461032c5760a036600319011261032c57610659612482565b6106616124ae565b6106696124c4565b9061067261246c565b61067b3361309b565b156103b057604080516001600160a01b039485168152918416602083015242908201524360608201529082169290911690600435907fb0a9c7605389f1127c2299d4a3ed85f0b2fc19894ab5411d76b453bb29f9f47b90608090a4005b3461032c5761010036600319011261032c576106f261245c565b6106fa612482565b906107036124ae565b61070b6124c4565b9061071461246c565b9061071e3361309b565b156103b057604080516001600160a01b039485168152928416602084015260a4359083015260c435606083015260e43560808301524260a08301524360c08301528216939091169160ff16907f17c1899a3fd431f2b2200b90e738d270bb856a4222040c5650bfa208acb3b6509060e090a4005b3461032c57602036600319011261032c576107ab612498565b336000908152600080516020613528833981519152602052604090205460ff1615806107f8575b6104f757600380546001600160a01b0319166001600160a01b0392909216919091179055005b50336000908152600080516020613508833981519152602052604090205460ff16156107d2565b3461032c57600036600319011261032c5760206040516000805160206134c88339815191528152f35b3461032c57608036600319011261032c576108623361309b565b156103b057604080516024358152604435602082015260643591810191909152426060820152436080820152600435907fe80e9e3e09460d716260f5ce6979a59f6cf4fbc1096e20f008d78b5cac7b7179908060a081016103ab565b3461032c5760a036600319011261032c576108d7612498565b6108e03361309b565b156103b057604080516044358152606435602082015260843591810191909152426060820152436080820152602435916001600160a01b0316907fb08f12d79c5828345938b295337ebad6aa44441a33df36e9f766b0b7f253889b908060a081015b0390a3005b3461032c57604036600319011261032c5761098e600435610966612482565b9061098961098282600052600060205260016040600020015490565b3390613237565b61343f565b005b3461032c57604036600319011261032c576109a9612498565b6109b16124ee565b906109bb3361309b565b156103b05760408051921515835242602084015243908301526001600160a01b0316907fd079c1af4038467292233cbd5af2e60da5c45ea48670f905aff3da18b483973c90606090a2005b3461032c57608036600319011261032c57610a1f612482565b6044356001600160401b03811161032c57610a3e90369060040161250a565b91906064356001600160401b03811161032c57610a5f90369060040161250a565b9190610a6a3361309b565b156103b0577ffdf5ccbb26a02ea4efd5415e00b1d7782ca04cbb6b33a0d0a0d549ba284f9e5792610aaa610ab8936040519760808952608089019161260e565b91868303602088015261260e565b4260408501524360608501526001600160a01b03909216926004359281900390a3005b3461032c5760c036600319011261032c57610af4612498565b610afc6124ae565b90610b063361309b565b156103b057604080516064358152608435602082015260a435918101919091524260608201524360808201526001600160a01b03928316926024359216907f8d99dbd92dc7116e69aa285daa09f2da514d6b2ca202545c3d9a0385982a7a699060a090a4005b3461032c5760a036600319011261032c57610b8561245c565b610b8d6124ae565b90610b966124c4565b91610ba03361309b565b156103b057604080516001600160a01b039485168152608435602082015242918101919091524360608201529216916024359160ff16907fdcb006502b86d8ebfada5d7606648e10555d5df4a42fe9a8fcd00999c25faaf490608090a4005b3461032c57610c0d366125c0565b90610c1a9392933361309b565b156103b0576040805192835242602084015243908301526001600160a01b039081169381169216907fd1630e8dfeca8f80cedf002590087ccd08ffc4a5a1860fc02892098e7aa92de1908060608101610463565b3461032c57602036600319011261032c57610c87612498565b6000805160206134e8833981519152549060ff8260401c1615916001600160401b038116600181101580610dab575b610d9357151580610da3575b610d935782610d66575b506000805160206134e8833981519152805467ffffffffffffffff191660011790556001600160a01b038116156103b057610d0690613324565b50610d0d57005b68ff0000000000000000196000805160206134e883398151915254166000805160206134e8833981519152557fc7f505b2f371ae2175ee4913f4499e1f2633a7b5936321eed1cdaeb6115181d2602060405160018152a1005b68ff0000000000000000191668010000000000000000176000805160206134e88339815191525582610ccc565b62dc149f60e41b60005260046000fd5b508215610cc2565b5083610cb6565b3461032c57600036600319011261032c5760206040517f21529962a37ffc05faaf32383e8f79d8e3f16fde93abc13525d3d5f3ddd0b6308152f35b3461032c57602036600319011261032c57610e06612498565b610e0f336131e6565b60075460ff81166103b05760ff19166001176007556000805160206134c8833981519152600081815260208190527fb00d7b61471c2960dc5a4d1f926fa468cd1498e9d401718feeba8f256f114bd980549082905590917fbd79b86ffe0ab8e8776151514217cd7cacd52c909f66475c3af44e129f0b00ff8380a46001600160a01b038116610e9a57005b61098e90613285565b3461032c57602036600319011261032c57610ebc612498565b336000908152600080516020613528833981519152602052604090205460ff161580610f08575b6104f7576001600160a01b03166000908152600660205260409020805460ff19169055005b50336000908152600080516020613508833981519152602052604090205460ff1615610ee3565b3461032c5761010036600319011261032c57610f49612498565b610f51612482565b90610f5a6124ae565b60c4356001600160401b03811161032c573660238201121561032c578060040135906001600160401b03821161032c573660248360051b8301011161032c57610fa23361309b565b156103b0577ff5041a4d1e1f497822428a20e208ea0ad2c90eb99518d0d9a1f598f8af04cd7291610ffb6040519283926064358452608435602085015260a435604085015260e06060850152602460e0850192016126a8565b60e43560808301524260a08301524360c08301526001600160a01b0394851696851695909416930390a4005b3461032c57608036600319011261032c5761104061243c565b61104861244c565b6110513361309b565b156103b05760ff90816040519360243585521660208401521660408201524260608201524360808201527f337fd9f9304e9da4c04886a5b8bf56e74032b459758212a860bc61d3544353dd60a060043592a2005b3461032c57600036600319011261032c576005546040516001600160a01b039091168152602090f35b3461032c57600036600319011261032c576002546040516001600160a01b039091168152602090f35b3461032c5761018036600319011261032c57611111612498565b611119612482565b906111226124ae565b610164359060ff821680920361032c5761113b3361309b565b156103b057604080516064358152608435602082015260a4359181019190915260c435606082015260e43560808201526101043560a08201526101243560c08201526101443560e082015261010081019290925242610120830152436101408301526001600160a01b039081169381169216907f9b4f5f387e6b6c21cc8d67c37c41d9d7b8d8b3f16494c84db2dd1fca812a644f9061016090a4005b3461032c57600036600319011261032c57602060405160008152f35b3461032c5760a036600319011261032c5761120c61245c565b611214612482565b9061121d6124ae565b6112263361309b565b156103b057604080516064358152608435602082015242918101919091524360608201526001600160a01b03918216939091169160ff16907f4a928ce96ccd98c06c706d2dfc9e3be829d83d7df95db10dfe9d1c359ea54e78908060808101610463565b3461032c57608036600319011261032c576112a361245c565b6112ab612482565b906112b46124ae565b6112bd3361309b565b156103b05760408051606435815242602082015243918101919091526001600160a01b03918216939091169160ff16907f589609a9576cbe900d4afeecbd83764a5db719055826446f88c74bee62af7f81908060608101610463565b3461032c57608036600319011261032c5761133261245c565b61133a6124ae565b906064356001600160401b03811161032c5761135a90369060040161250a565b92906113653361309b565b156103b0576113a17f637d9c5f725b51336e8338a6c85951604e8ee7bc041e8e2be8dc739abe9d2173916040519560608752606087019161260e565b4260208601524360408601526001600160a01b03909216936024359360ff169281900390a4005b3461032c57604036600319011261032c576113e1612482565b600435600052600060205260406000209060018060a01b0316600052602052602060ff604060002054166040519015158152f35b3461032c57604036600319011261032c576004356001600160401b03811161032c5761144590369060040161250a565b90602435916001600160401b03831161032c5760e0600319843603011261032c5761146f3361309b565b156103b0577f3f5c3dc69ea622ef6e129f03f630c1484849db8ae3e8f3d7fa164ca7fae08c27906114a1368285612589565b6020815191012093610942604051928392339643924292600401918661304d565b3461032c57606036600319011261032c576114dc3361309b565b156103b05760408051602435815260443560208201524291810191909152436060820152600435907f2903b3642d2105b7fbd127326de888ab50e8d975bf819398337fb58407c1b10e9080608081016103ab565b3461032c5760a036600319011261032c5761154961245c565b611551612482565b9061155a6124ae565b6084356001600160401b03811161032c5761157990369060040161250a565b906115833361309b565b156103b0577fa3faac07b1221710e43ca60800fc18acd83007ed48055def89c1e69b79ba44cb9160ff6115cb604051938493606435855260806020860152608085019161260e565b4260408401524360608401526001600160a01b03958616979095169516930390a4005b3461032c57602036600319011261032c57611607612498565b611610336131e6565b600280546001600160a01b0319166001600160a01b0392909216919091179055005b3461032c5761014036600319011261032c5761164c612482565b61165461243c565b9061165d61244c565b61166561246c565b60a4356001600160a01b038116929083900361032c576116843361309b565b156103b05760ff90816040519616865216602085015260018060a01b03166040840152606083015260c435608083015260e43560a08301526101043560c08301526101243560e0830152426101008301524361012083015260018060a01b0316907fa24904fab3b2e5505845a72e1cd3b798ad4fbd48a7e6cb662de4b0d0d5abb29861014060043592a3005b3461032c57602036600319011261032c576001600160a01b03611731612498565b166000526006602052602060ff604060002054166040519015158152f35b3461032c57608036600319011261032c57611768612482565b6117706124ae565b61177861244c565b6117813361309b565b156103b0576040805160ff909216825242602083015243908201526001600160a01b039182169290911690600435907fd2917d37031c0dfe5016665c7a83360cbf2ff32063096b2caf61ba66c06832e5908060608101610463565b3461032c57600036600319011261032c576003546040516001600160a01b039091168152602090f35b3461032c57602036600319011261032c576001600160a01b03611826612498565b166000526001602052602060ff604060002054166040519015158152f35b3461032c57608036600319011261032c576004356001600160401b03811161032c5761187490369060040161250a565b906064356001600160401b03811161032c5760e0600319823603011261032c5761189d3361309b565b156103b0576118e7906118d66118b4368686612589565b602081519101209360405195604435875260a0602088015260a087019161260e565b90848203604086015260040161270c565b4260608401524360808401527ffb0f08ac39934a2d9d9120c47f7079c97667c3a5495f5a6733b46b2c87cd2502602435938033930390a4005b3461032c57600036600319011261032c577f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316300361198b5760206040517f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc8152f35b6345a93fc960e01b60005260046000fd5b3461032c5760a036600319011261032c576119b5612498565b6119bd612482565b906119c66124ae565b6084359081151580920361032c576119dd3361309b565b156103b057604080516064358152602081019390935242908301524360608301526001600160a01b039081169381169216907fa9de58179a7ba626557514c856f27ad734eea61c56c3e9acb937f374ec63afe790608090a4005b604036600319011261032c57611a4b612498565b6024356001600160401b03811161032c573660238201121561032c57611a7b903690602481600401359101612589565b307f00000000000000000000000000000000000000000000000000000000000000006001600160a01b031614611c3257611ab4336131e6565b6040516352d1902d60e01b81526001600160a01b03831690602081600481855afa60009181611bfe575b50611af45763340aafcd60e11b60005260046000fd5b7f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc03611bed57823b15611bed57827f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc557fbc7cd75a20ee27fd9adebab32041f755214dbc6bffa90cc0225b39da2e5c2d3b600080a2805180611b7257005b6000926020849301905af43d15611be8573d611b8d8161256e565b90611b9b6040519283612537565b8152600060203d92013e5b15611bad57005b60405162461bcd60e51b81526020600482015260136024820152721d5c19dc985919481a5b9a5d0819985a5b1959606a1b6044820152606490fd5b611ba6565b63340aafcd60e11b60005260046000fd5b9091506020813d602011611c2a575b81611c1a60209383612537565b8101031261032c57519085611ade565b3d9150611c0d565b6309e1070b60e31b60005260046000fd5b3461032c57604036600319011261032c57611c5c612498565b611c64612482565b506001600160a01b031680156103b0576005546001600160a01b03168015159081611d05575b508015611cdf575b8015611cb9575b156103b0576000908152600660205260409020805460ff19166001179055005b50336000908152600080516020613528833981519152602052604090205460ff16611c99565b50336000908152600080516020613508833981519152602052604090205460ff16611c92565b9050331482611c8a565b3461032c5761010036600319011261032c57611d29612498565b611d31612482565b90611d3a6124ae565b6084356001600160401b03811161032c57611d5990369060040161250a565b919060a4356001600160401b03811161032c57611d7a90369060040161250a565b93909260c4359460ff861680960361032c57611d953361309b565b156103b0577fad187874b793634c55d977f35d4828526eb48170a9531c71d88f8fd10cf9c23794611ded91611ddf604051968796606435885260e0602089015260e088019161260e565b91858303604087015261260e565b606083019590955260e43560808301524260a08301524360c08301526001600160a01b039081169681169516930390a4005b3461032c57606036600319011261032c57611e38612498565b611e40612482565b611e4861243c565b90611e523361309b565b156103b0576040805160ff909316835242602084015243908301526001600160a01b039081169216907fb059389b6a1d06bc1833ca4b78798c2642d02b2d03d0f8fce5f4b8299737d3b7908060608101610942565b3461032c57604036600319011261032c57600435611ec3612482565b336001600160a01b0390911603611edf5761098e90339061343f565b62b0d32560e11b6000523360045260245260446000fd5b3461032c57602036600319011261032c57611f0f612498565b50336000908152600080516020613528833981519152602052604090205460ff161580611f3d575b6104f757005b50336000908152600080516020613508833981519152602052604090205460ff1615611f37565b3461032c57604036600319011261032c5761098e600435611f83612482565b90611f9f61098282600052600060205260016040600020015490565b6133b3565b3461032c57604036600319011261032c57611fbd612498565b611fc56124ee565b336000908152600080516020613528833981519152602052604090205490919060ff161580612023575b6104f7576001600160a01b031680156103b057600052600160205260406000209060ff801983541691151516179055600080f35b50336000908152600080516020613508833981519152602052604090205460ff1615611fef565b3461032c5760a036600319011261032c57612063612498565b61206b612482565b906120746124ae565b61207c6124c4565b906120863361309b565b156103b057604080516001600160a01b0393841681526084356020820152429181019190915243606082015290821693821692909116907fda5568642b67660133b1de538c867c58f3037a5722b0e231a959ee8ca11b2ed790608090a4005b3461032c57606036600319011261032c576004356001600160401b03811161032c5761211590369060040161250a565b604435916001600160401b03831161032c5760e0600319843603011261032c5761213e3361309b565b156103b0577fe67d7d5cff44135efdb2aa905b4fcd19c700c05482dd08ccb52a0b02b99f788a610463612172368585612589565b602081519101209360405191829160243597339643924292600401918661304d565b3461032c57602036600319011261032c5760206121c1600435600052600060205260016040600020015490565b604051908152f35b3461032c5760c036600319011261032c576121e2612482565b6121ea61243c565b906121f361244c565b60a4356001600160401b03811161032c5761221290369060040161250a565b919061221d3361309b565b156103b0577fdbbb8b49248d8ae078049644637ec9edf159baa1c653f8274ddf3fa26f358d269260ff612271938160405198168852166020870152608435604087015260c0606087015260c086019161260e565b4260808501524360a08501526001600160a01b03909216926004359281900390a3005b3461032c57608036600319011261032c576122ad612482565b6122b561243c565b906122bf3361309b565b156103b05760ff60405192168252606435602083015242604083015243606083015260018060a01b0316907f9f8c04497ebc19f8f7de480e55fdfa3780212516de2d597e6f793d6629017cec608060043592a3005b3461032c5760e036600319011261032c5761232d612482565b6044359081151580920361032c576123443361309b565b156103b0576040805192835260643560208401526084359083015260a435606083015260c43560808301524260a08301524360c08301526001600160a01b031690600435907fa234ab85728295548823d8a26077ecc77aa5815f9ed8f4c5e6fd390ac851d4cc9060e090a3005b3461032c5760a036600319011261032c576123ca61243c565b6123d261246c565b6123db3361309b565b156103b05760ff604051926024358452166020830152606435604083015260018060a01b031660608201524260808201524360a08201527ff7ab826cedf9d005102eddf95e65f43597aef36a55ff09ee4f452204c83f4afc60c060043592a2005b6044359060ff8216820361032c57565b6064359060ff8216820361032c57565b6004359060ff8216820361032c57565b608435906001600160a01b038216820361032c57565b602435906001600160a01b038216820361032c57565b600435906001600160a01b038216820361032c57565b604435906001600160a01b038216820361032c57565b606435906001600160a01b038216820361032c57565b35906001600160a01b038216820361032c57565b60243590811515820361032c57565b3590811515820361032c57565b9181601f8401121561032c578235916001600160401b03831161032c576020838186019501011161032c57565b90601f801991011681019081106001600160401b0382111761255857604052565b634e487b7160e01b600052604160045260246000fd5b6001600160401b03811161255857601f01601f191660200190565b9291926125958261256e565b916125a36040519384612537565b82948184528183011161032c578281602093846000960137010152565b608090600319011261032c576004356001600160a01b038116810361032c57906024356001600160a01b038116810361032c57906044356001600160a01b038116810361032c579060643590565b908060209392818452848401376000828201840152601f01601f1916010190565b9035603e198236030181121561032c570190565b9035601e198236030181121561032c5701602081359101916001600160401b03821161032c578160051b3603831361032c57565b9035601e198236030181121561032c5701602081359101916001600160401b03821161032c57813603831361032c57565b9160209082815201919060005b8181106126c25750505090565b909192602080600192838060a01b036126da886124da565b1681520194019291016126b5565b81835290916001600160fb1b03831161032c5760209260051b809284830137010190565b612716818061262f565b9060e0835261012083019161272b8180612643565b809194604060e0880152526101408501906101408160051b8701019480926000915b838310612ff7575050505050806020612767920190612643565b60df1985850301610100860152808452602084019360208260051b82010194836000925b848410612fa4575050505050506127a5602082018261262f565b91838103602085015260408101926127bd8180612643565b8091956040855252606083019060608160051b8501019580926000915b838310612f5c5750505050508060206127f4920190612643565b90916020818603910152808452602084019360208260051b82010194836000925b848410612f275750505050505061282f604082018261262f565b91838103604085015260408101926128478180612643565b8091956040855252606083019060608160051b8501019580926000915b838310612edf57505050505080602061287e920190612643565b90916020818603910152808452602084019360208260051b82010194836000925b848410612e66575050505050506128b9606082018261262f565b91838103606085015260408101926128d18180612643565b8091956040855252606083019060608160051b8501019580926000915b838310612e15575050505050806020612908920190612643565b90916020818603910152808452602084019360208260051b82010194836000925b848410612d7b57505050505050612943608082018261262f565b918381036080850152604081019261295b8180612643565b8091956040855252606083019060608160051b8501019580926000915b838310612d25575050505050806020612992920190612643565b90916020818603910152808452602084019360208260051b82010194836000925b848410612cc8575050505050506129cd60a082018261262f565b9183810360a085015260408101926129e58180612643565b8091956040855252606083019060608160051b8501019580926000915b838310612c92575050505050806020612a1c920190612643565b90916020818603910152808452602084019360208260051b82010194836000925b848410612bf0575050505050508060c0612a5892019061262f565b9160c08183039101526040810191612a708180612643565b8091946040855252606083019060608160051b8501019480926000915b838310612b95575050505050806020612aa7920190612643565b90916020818503910152808352602083019260208260051b82010193836000925b848410612ad85750505050505090565b909192939495601f19828203018452612af1878461262f565b90612b1b612b10612b028480612677565b60408552604085019161260e565b926020810190612643565b90916020818503910152808352602083019060208160051b85010193836000905b838210612b5f575050505050506020806001929801940194019294939190612ac8565b909192939495602080612b87600193601f19888203018a52612b818b87612677565b9061260e565b980196019493920190612b3c565b909192939596602080612bdf600193605f198c8203018752612bb78b8761262f565b90612bd2612bc8612b028480612677565b9285810190612677565b918581850391015261260e565b999801959491909101920190612a8d565b90919293949796601f19828203018452612c0a898461262f565b90612c1b612b10612b028480612677565b90916020818503910152808352602083019060208160051b85010193836000905b838210612c62575050505050506020806001929a01940194019294939190979697612a3d565b909192939495602080612c84600193601f19888203018a52612b818b87612677565b980196019493920190612c3c565b90919293959897602080612cb66001938d605f19908203018752612bb78b8761262f565b9a9b9801959491909101920190612a02565b90919293949796602080612d13600193601f19868203018852612ceb8d8861262f565b90612d06612cfc612b028480612677565b9285810190612643565b91858185039101526126e8565b999a01969591909101930191906129b3565b90919293959897602080600192605f198d8203018652612d458a8661262f565b908280612d63612d558580612677565b60408652604086019161260e565b9301359101529a9b9801959491909101920190612978565b90919293949796601f19828203018452612d95898461262f565b6020612dbf612db5612da78480612677565b60408752604087019161260e565b9282810190612643565b929093828183039101528281520191906000905b808210612df457509899919850506020908101959460010193019190612929565b909192602080600192612e06876124fd565b15158152019401920190612dd3565b90919293959897602080600192605f198d8203018652612e358a8661262f565b9082612e4f81612e48612da78680612677565b94016124fd565b15159101529a9b98019594919091019201906128ee565b90919293949796601f19828203018452612e80898461262f565b6020612e92612db5612da78480612677565b929093828183039101528281520191906000905b808210612ec75750989991985050602090810195946001019301919061289f565b90919260208060019286358152019401920190612ea6565b90919293959897602080600192605f198d8203018652612eff8a8661262f565b908280612f0f612d558580612677565b9301359101529a9b9801959491909101920190612864565b90919293949796602080612f4a600193601f19868203018852612ceb8d8861262f565b999a0196959190910193019190612815565b90919293959897602080600192605f198d8203018652612f7c8a8661262f565b908280612f8c612d558580612677565b9301359101529a9b98019594919091019201906127da565b90919293949796602080612fe5600193601f19868203018852612fc78d8861262f565b90612fd8612cfc612b028480612677565b91858185039101526126a8565b999a019695919091019301919061278b565b90919293979660208060019261013f198b82030186526130178c8661262f565b9082613026612b028480612677565b9261303882888060a01b0392016124da565b16910152999a0195949190910192019061274d565b919261306b613079926060959897969860808652608086019161260e565b90838203602085015261270c565b9460408201520152565b9081602091031261032c5751801515810361032c5790565b6001600160a01b031660008181526001602052604090205460ff16613117576002546001600160a01b03168061318e575b506003546001600160a01b031680613126575b506005546001600160a01b031681148061311d575b61311757600052600660205260ff6040600020541661311257600090565b600190565b50600190565b508015156130f4565b60206024916040519283809263673448dd60e01b82528660048301525afa6000918161315d575b50156130df5761311757386130df565b61318091925060203d602011613187575b6131788183612537565b810190613083565b903861314d565b503d61316e565b60206024916040519283809263c699e63360e01b82528660048301525afa600091816131c5575b50156130cc5761311757386130cc565b6131df91925060203d602011613187576131788183612537565b90386131b5565b6001600160a01b0381166000908152600080516020613528833981519152602052604090205460ff16156132175750565b62b0d32560e11b60005260018060a01b0316600452600060245260446000fd5b90816000526000602052604060002060018060a01b03821660005260205260ff6040600020541615613267575050565b62b0d32560e11b60005260018060a01b031660045260245260446000fd5b6001600160a01b0381166000908152600080516020613508833981519152602052604090205460ff16156132b95750600090565b6001600160a01b0316600081815260008051602061350883398151915260205260408120805460ff191660011790553391906000805160206134c8833981519152907f2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d9080a4600190565b6001600160a01b0381166000908152600080516020613528833981519152602052604090205460ff16156133585750600090565b6001600160a01b0316600081815260008051602061352883398151915260205260408120805460ff191660011790553391907f2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d8180a4600190565b6000818152602081815260408083206001600160a01b038616845290915290205460ff16156133e3575050600090565b6000818152602081815260408083206001600160a01b0395909516808452949091528120805460ff19166001179055339291907f2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d9080a4600190565b6000818152602081815260408083206001600160a01b038616845290915290205460ff1661346e575050600090565b6000818152602081815260408083206001600160a01b0395909516808452949091528120805460ff19169055339291907ff6391f5c32d9c69d2a47ea670b442974b53935d1edc7fd64eb21e047a839171b9080a460019056fe7263713b378e463b1abfeab89a5672633e678c6915a90afe819fcbb4e75efb434377386e2795aba8c0ce23a1e6e67bac790e4b4166f14b7e9365049ab946f8c0b00d7b61471c2960dc5a4d1f926fa468cd1498e9d401718feeba8f256f114bd8ad3228b676f7d3cd4284a5443f17f1962b36e491b30a40b2405849e597ba5fb5a264697066735822122078c9db8ff88d38e262ba3e7b996d52af287826d2dbabdd5ff90d3b5421c5bf2064736f6c634300081b00334377386e2795aba8c0ce23a1e6e67bac790e4b4166f14b7e9365049ab946f8c0",
+  "deployedBytecode": "0x6080604052600436101561001257600080fd5b60003560e01c806306a7cedb146123b1578063100fca4f14612314578063176af80c146122945780631a7a34ef146121c9578063248a9ca31461219457806324de01e4146120e557806325b14c331461204a57806327b8171814611fa45780632f2ff15d14611f6457806335a5af9214611ef657806336568abe14611ea75780633711424714611e1f5780633cced65314611d0f5780634739f7e514611c435780634f1ef28614611a375780634f2bdd091461199c57806352d1902d1461192057806363d163631461184457806366706fd21461180557806373b5708c146117dc57806375c480381461174f5780637639a230146117105780637944994b146116325780637b77cd6a146115ee57806382b678c31461153057806385ceceb5146114c2578063906c49f61461141557806391d14854146113c857806398616097146113195780639de5933b1461128a5780639e4a40ca146111f3578063a217fddf146111d7578063a6df9eea146110f7578063afcff50f146110ce578063b182ba64146110a5578063b2c8dc7214611027578063b3defa3c14610f2f578063bab2af1d14610ea3578063be6b99e314610ded578063c2d11c3814610db2578063c4d66de814610c6e578063c6770db614610bff578063cdc0fc6114610b6c578063d08aa55f14610adb578063d475632514610a06578063d4925be514610990578063d547741f14610947578063d6278d9c146108be578063d6d2820014610848578063d7056c201461081f578063de2b776414610792578063e3cdc125146106d8578063e4617ca514610640578063e53122ec146105b3578063eeaf8bcd14610544578063f4795b2614610491578063fa0dced914610468578063fa2e1d5e146103c0578063fa78f4ca146103315763ffa1ad74146102b057600080fd5b3461032c57600036600319011261032c5760408051906102d08183612537565b60058252640322e302e360dc1b6020830152805180926020825280519081602084015260005b8281106103155750506000828201840152601f01601f19168101030190f35b6020828201810151878301870152869450016102f6565b600080fd5b3461032c5760a036600319011261032c5761034b3361309b565b156103b05760408051602435815260443560208201526064359181019190915260843560608201524260808201524360a0820152600435907f8155a4b38a877d212b271811786986f8f7d78074c82fce4526c58defcc6d7ebd908060c081015b0390a2005b6282b42960e81b60005260046000fd5b3461032c5760e036600319011261032c576103d961245c565b6103e1612482565b906103ea6124ae565b6103f33361309b565b156103b057604080516064358152608435602082015260a4359181019190915260c43560608201524260808201524360a08201526001600160a01b03918216939091169160ff16907f626e3fd5d9323ca4b7ffa3ca51c21c02766b638d15eb8896a36a4e0e97ae6de4908060c081015b0390a4005b3461032c57600036600319011261032c576004546040516001600160a01b039091168152602090f35b3461032c57602036600319011261032c576104aa612498565b336000908152600080516020613528833981519152602052604090205460ff16158061051d575b6104f757600480546001600160a01b0319166001600160a01b0392909216919091179055005b62b0d32560e11b600052336004526000805160206134c883398151915260245260446000fd5b50336000908152600080516020613508833981519152602052604090205460ff16156104d1565b3461032c57610552366125c0565b9061055f9392933361309b565b156103b0576040805192835242602084015243908301526001600160a01b039081169381169216907f021f03e8a1315704c74c03e8c022c12bc80c4a2bd4fec8bd36b217322c340ad3908060608101610463565b3461032c57602036600319011261032c576105cc612498565b336000908152600080516020613528833981519152602052604090205460ff161580610619575b6104f757600580546001600160a01b0319166001600160a01b0392909216919091179055005b50336000908152600080516020613508833981519152602052604090205460ff16156105f3565b3461032c5760a036600319011261032c57610659612482565b6106616124ae565b6106696124c4565b9061067261246c565b61067b3361309b565b156103b057604080516001600160a01b039485168152918416602083015242908201524360608201529082169290911690600435907fb0a9c7605389f1127c2299d4a3ed85f0b2fc19894ab5411d76b453bb29f9f47b90608090a4005b3461032c5761010036600319011261032c576106f261245c565b6106fa612482565b906107036124ae565b61070b6124c4565b9061071461246c565b9061071e3361309b565b156103b057604080516001600160a01b039485168152928416602084015260a4359083015260c435606083015260e43560808301524260a08301524360c08301528216939091169160ff16907f17c1899a3fd431f2b2200b90e738d270bb856a4222040c5650bfa208acb3b6509060e090a4005b3461032c57602036600319011261032c576107ab612498565b336000908152600080516020613528833981519152602052604090205460ff1615806107f8575b6104f757600380546001600160a01b0319166001600160a01b0392909216919091179055005b50336000908152600080516020613508833981519152602052604090205460ff16156107d2565b3461032c57600036600319011261032c5760206040516000805160206134c88339815191528152f35b3461032c57608036600319011261032c576108623361309b565b156103b057604080516024358152604435602082015260643591810191909152426060820152436080820152600435907fe80e9e3e09460d716260f5ce6979a59f6cf4fbc1096e20f008d78b5cac7b7179908060a081016103ab565b3461032c5760a036600319011261032c576108d7612498565b6108e03361309b565b156103b057604080516044358152606435602082015260843591810191909152426060820152436080820152602435916001600160a01b0316907fb08f12d79c5828345938b295337ebad6aa44441a33df36e9f766b0b7f253889b908060a081015b0390a3005b3461032c57604036600319011261032c5761098e600435610966612482565b9061098961098282600052600060205260016040600020015490565b3390613237565b61343f565b005b3461032c57604036600319011261032c576109a9612498565b6109b16124ee565b906109bb3361309b565b156103b05760408051921515835242602084015243908301526001600160a01b0316907fd079c1af4038467292233cbd5af2e60da5c45ea48670f905aff3da18b483973c90606090a2005b3461032c57608036600319011261032c57610a1f612482565b6044356001600160401b03811161032c57610a3e90369060040161250a565b91906064356001600160401b03811161032c57610a5f90369060040161250a565b9190610a6a3361309b565b156103b0577ffdf5ccbb26a02ea4efd5415e00b1d7782ca04cbb6b33a0d0a0d549ba284f9e5792610aaa610ab8936040519760808952608089019161260e565b91868303602088015261260e565b4260408501524360608501526001600160a01b03909216926004359281900390a3005b3461032c5760c036600319011261032c57610af4612498565b610afc6124ae565b90610b063361309b565b156103b057604080516064358152608435602082015260a435918101919091524260608201524360808201526001600160a01b03928316926024359216907f8d99dbd92dc7116e69aa285daa09f2da514d6b2ca202545c3d9a0385982a7a699060a090a4005b3461032c5760a036600319011261032c57610b8561245c565b610b8d6124ae565b90610b966124c4565b91610ba03361309b565b156103b057604080516001600160a01b039485168152608435602082015242918101919091524360608201529216916024359160ff16907fdcb006502b86d8ebfada5d7606648e10555d5df4a42fe9a8fcd00999c25faaf490608090a4005b3461032c57610c0d366125c0565b90610c1a9392933361309b565b156103b0576040805192835242602084015243908301526001600160a01b039081169381169216907fd1630e8dfeca8f80cedf002590087ccd08ffc4a5a1860fc02892098e7aa92de1908060608101610463565b3461032c57602036600319011261032c57610c87612498565b6000805160206134e8833981519152549060ff8260401c1615916001600160401b038116600181101580610dab575b610d9357151580610da3575b610d935782610d66575b506000805160206134e8833981519152805467ffffffffffffffff191660011790556001600160a01b038116156103b057610d0690613324565b50610d0d57005b68ff0000000000000000196000805160206134e883398151915254166000805160206134e8833981519152557fc7f505b2f371ae2175ee4913f4499e1f2633a7b5936321eed1cdaeb6115181d2602060405160018152a1005b68ff0000000000000000191668010000000000000000176000805160206134e88339815191525582610ccc565b62dc149f60e41b60005260046000fd5b508215610cc2565b5083610cb6565b3461032c57600036600319011261032c5760206040517f21529962a37ffc05faaf32383e8f79d8e3f16fde93abc13525d3d5f3ddd0b6308152f35b3461032c57602036600319011261032c57610e06612498565b610e0f336131e6565b60075460ff81166103b05760ff19166001176007556000805160206134c8833981519152600081815260208190527fb00d7b61471c2960dc5a4d1f926fa468cd1498e9d401718feeba8f256f114bd980549082905590917fbd79b86ffe0ab8e8776151514217cd7cacd52c909f66475c3af44e129f0b00ff8380a46001600160a01b038116610e9a57005b61098e90613285565b3461032c57602036600319011261032c57610ebc612498565b336000908152600080516020613528833981519152602052604090205460ff161580610f08575b6104f7576001600160a01b03166000908152600660205260409020805460ff19169055005b50336000908152600080516020613508833981519152602052604090205460ff1615610ee3565b3461032c5761010036600319011261032c57610f49612498565b610f51612482565b90610f5a6124ae565b60c4356001600160401b03811161032c573660238201121561032c578060040135906001600160401b03821161032c573660248360051b8301011161032c57610fa23361309b565b156103b0577ff5041a4d1e1f497822428a20e208ea0ad2c90eb99518d0d9a1f598f8af04cd7291610ffb6040519283926064358452608435602085015260a435604085015260e06060850152602460e0850192016126a8565b60e43560808301524260a08301524360c08301526001600160a01b0394851696851695909416930390a4005b3461032c57608036600319011261032c5761104061243c565b61104861244c565b6110513361309b565b156103b05760ff90816040519360243585521660208401521660408201524260608201524360808201527f337fd9f9304e9da4c04886a5b8bf56e74032b459758212a860bc61d3544353dd60a060043592a2005b3461032c57600036600319011261032c576005546040516001600160a01b039091168152602090f35b3461032c57600036600319011261032c576002546040516001600160a01b039091168152602090f35b3461032c5761018036600319011261032c57611111612498565b611119612482565b906111226124ae565b610164359060ff821680920361032c5761113b3361309b565b156103b057604080516064358152608435602082015260a4359181019190915260c435606082015260e43560808201526101043560a08201526101243560c08201526101443560e082015261010081019290925242610120830152436101408301526001600160a01b039081169381169216907f9b4f5f387e6b6c21cc8d67c37c41d9d7b8d8b3f16494c84db2dd1fca812a644f9061016090a4005b3461032c57600036600319011261032c57602060405160008152f35b3461032c5760a036600319011261032c5761120c61245c565b611214612482565b9061121d6124ae565b6112263361309b565b156103b057604080516064358152608435602082015242918101919091524360608201526001600160a01b03918216939091169160ff16907f4a928ce96ccd98c06c706d2dfc9e3be829d83d7df95db10dfe9d1c359ea54e78908060808101610463565b3461032c57608036600319011261032c576112a361245c565b6112ab612482565b906112b46124ae565b6112bd3361309b565b156103b05760408051606435815242602082015243918101919091526001600160a01b03918216939091169160ff16907f589609a9576cbe900d4afeecbd83764a5db719055826446f88c74bee62af7f81908060608101610463565b3461032c57608036600319011261032c5761133261245c565b61133a6124ae565b906064356001600160401b03811161032c5761135a90369060040161250a565b92906113653361309b565b156103b0576113a17f637d9c5f725b51336e8338a6c85951604e8ee7bc041e8e2be8dc739abe9d2173916040519560608752606087019161260e565b4260208601524360408601526001600160a01b03909216936024359360ff169281900390a4005b3461032c57604036600319011261032c576113e1612482565b600435600052600060205260406000209060018060a01b0316600052602052602060ff604060002054166040519015158152f35b3461032c57604036600319011261032c576004356001600160401b03811161032c5761144590369060040161250a565b90602435916001600160401b03831161032c5760e0600319843603011261032c5761146f3361309b565b156103b0577f3f5c3dc69ea622ef6e129f03f630c1484849db8ae3e8f3d7fa164ca7fae08c27906114a1368285612589565b6020815191012093610942604051928392339643924292600401918661304d565b3461032c57606036600319011261032c576114dc3361309b565b156103b05760408051602435815260443560208201524291810191909152436060820152600435907f2903b3642d2105b7fbd127326de888ab50e8d975bf819398337fb58407c1b10e9080608081016103ab565b3461032c5760a036600319011261032c5761154961245c565b611551612482565b9061155a6124ae565b6084356001600160401b03811161032c5761157990369060040161250a565b906115833361309b565b156103b0577fa3faac07b1221710e43ca60800fc18acd83007ed48055def89c1e69b79ba44cb9160ff6115cb604051938493606435855260806020860152608085019161260e565b4260408401524360608401526001600160a01b03958616979095169516930390a4005b3461032c57602036600319011261032c57611607612498565b611610336131e6565b600280546001600160a01b0319166001600160a01b0392909216919091179055005b3461032c5761014036600319011261032c5761164c612482565b61165461243c565b9061165d61244c565b61166561246c565b60a4356001600160a01b038116929083900361032c576116843361309b565b156103b05760ff90816040519616865216602085015260018060a01b03166040840152606083015260c435608083015260e43560a08301526101043560c08301526101243560e0830152426101008301524361012083015260018060a01b0316907fa24904fab3b2e5505845a72e1cd3b798ad4fbd48a7e6cb662de4b0d0d5abb29861014060043592a3005b3461032c57602036600319011261032c576001600160a01b03611731612498565b166000526006602052602060ff604060002054166040519015158152f35b3461032c57608036600319011261032c57611768612482565b6117706124ae565b61177861244c565b6117813361309b565b156103b0576040805160ff909216825242602083015243908201526001600160a01b039182169290911690600435907fd2917d37031c0dfe5016665c7a83360cbf2ff32063096b2caf61ba66c06832e5908060608101610463565b3461032c57600036600319011261032c576003546040516001600160a01b039091168152602090f35b3461032c57602036600319011261032c576001600160a01b03611826612498565b166000526001602052602060ff604060002054166040519015158152f35b3461032c57608036600319011261032c576004356001600160401b03811161032c5761187490369060040161250a565b906064356001600160401b03811161032c5760e0600319823603011261032c5761189d3361309b565b156103b0576118e7906118d66118b4368686612589565b602081519101209360405195604435875260a0602088015260a087019161260e565b90848203604086015260040161270c565b4260608401524360808401527ffb0f08ac39934a2d9d9120c47f7079c97667c3a5495f5a6733b46b2c87cd2502602435938033930390a4005b3461032c57600036600319011261032c577f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316300361198b5760206040517f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc8152f35b6345a93fc960e01b60005260046000fd5b3461032c5760a036600319011261032c576119b5612498565b6119bd612482565b906119c66124ae565b6084359081151580920361032c576119dd3361309b565b156103b057604080516064358152602081019390935242908301524360608301526001600160a01b039081169381169216907fa9de58179a7ba626557514c856f27ad734eea61c56c3e9acb937f374ec63afe790608090a4005b604036600319011261032c57611a4b612498565b6024356001600160401b03811161032c573660238201121561032c57611a7b903690602481600401359101612589565b307f00000000000000000000000000000000000000000000000000000000000000006001600160a01b031614611c3257611ab4336131e6565b6040516352d1902d60e01b81526001600160a01b03831690602081600481855afa60009181611bfe575b50611af45763340aafcd60e11b60005260046000fd5b7f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc03611bed57823b15611bed57827f360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc557fbc7cd75a20ee27fd9adebab32041f755214dbc6bffa90cc0225b39da2e5c2d3b600080a2805180611b7257005b6000926020849301905af43d15611be8573d611b8d8161256e565b90611b9b6040519283612537565b8152600060203d92013e5b15611bad57005b60405162461bcd60e51b81526020600482015260136024820152721d5c19dc985919481a5b9a5d0819985a5b1959606a1b6044820152606490fd5b611ba6565b63340aafcd60e11b60005260046000fd5b9091506020813d602011611c2a575b81611c1a60209383612537565b8101031261032c57519085611ade565b3d9150611c0d565b6309e1070b60e31b60005260046000fd5b3461032c57604036600319011261032c57611c5c612498565b611c64612482565b506001600160a01b031680156103b0576005546001600160a01b03168015159081611d05575b508015611cdf575b8015611cb9575b156103b0576000908152600660205260409020805460ff19166001179055005b50336000908152600080516020613528833981519152602052604090205460ff16611c99565b50336000908152600080516020613508833981519152602052604090205460ff16611c92565b9050331482611c8a565b3461032c5761010036600319011261032c57611d29612498565b611d31612482565b90611d3a6124ae565b6084356001600160401b03811161032c57611d5990369060040161250a565b919060a4356001600160401b03811161032c57611d7a90369060040161250a565b93909260c4359460ff861680960361032c57611d953361309b565b156103b0577fad187874b793634c55d977f35d4828526eb48170a9531c71d88f8fd10cf9c23794611ded91611ddf604051968796606435885260e0602089015260e088019161260e565b91858303604087015261260e565b606083019590955260e43560808301524260a08301524360c08301526001600160a01b039081169681169516930390a4005b3461032c57606036600319011261032c57611e38612498565b611e40612482565b611e4861243c565b90611e523361309b565b156103b0576040805160ff909316835242602084015243908301526001600160a01b039081169216907fb059389b6a1d06bc1833ca4b78798c2642d02b2d03d0f8fce5f4b8299737d3b7908060608101610942565b3461032c57604036600319011261032c57600435611ec3612482565b336001600160a01b0390911603611edf5761098e90339061343f565b62b0d32560e11b6000523360045260245260446000fd5b3461032c57602036600319011261032c57611f0f612498565b50336000908152600080516020613528833981519152602052604090205460ff161580611f3d575b6104f757005b50336000908152600080516020613508833981519152602052604090205460ff1615611f37565b3461032c57604036600319011261032c5761098e600435611f83612482565b90611f9f61098282600052600060205260016040600020015490565b6133b3565b3461032c57604036600319011261032c57611fbd612498565b611fc56124ee565b336000908152600080516020613528833981519152602052604090205490919060ff161580612023575b6104f7576001600160a01b031680156103b057600052600160205260406000209060ff801983541691151516179055600080f35b50336000908152600080516020613508833981519152602052604090205460ff1615611fef565b3461032c5760a036600319011261032c57612063612498565b61206b612482565b906120746124ae565b61207c6124c4565b906120863361309b565b156103b057604080516001600160a01b0393841681526084356020820152429181019190915243606082015290821693821692909116907fda5568642b67660133b1de538c867c58f3037a5722b0e231a959ee8ca11b2ed790608090a4005b3461032c57606036600319011261032c576004356001600160401b03811161032c5761211590369060040161250a565b604435916001600160401b03831161032c5760e0600319843603011261032c5761213e3361309b565b156103b0577fe67d7d5cff44135efdb2aa905b4fcd19c700c05482dd08ccb52a0b02b99f788a610463612172368585612589565b602081519101209360405191829160243597339643924292600401918661304d565b3461032c57602036600319011261032c5760206121c1600435600052600060205260016040600020015490565b604051908152f35b3461032c5760c036600319011261032c576121e2612482565b6121ea61243c565b906121f361244c565b60a4356001600160401b03811161032c5761221290369060040161250a565b919061221d3361309b565b156103b0577fdbbb8b49248d8ae078049644637ec9edf159baa1c653f8274ddf3fa26f358d269260ff612271938160405198168852166020870152608435604087015260c0606087015260c086019161260e565b4260808501524360a08501526001600160a01b03909216926004359281900390a3005b3461032c57608036600319011261032c576122ad612482565b6122b561243c565b906122bf3361309b565b156103b05760ff60405192168252606435602083015242604083015243606083015260018060a01b0316907f9f8c04497ebc19f8f7de480e55fdfa3780212516de2d597e6f793d6629017cec608060043592a3005b3461032c5760e036600319011261032c5761232d612482565b6044359081151580920361032c576123443361309b565b156103b0576040805192835260643560208401526084359083015260a435606083015260c43560808301524260a08301524360c08301526001600160a01b031690600435907fa234ab85728295548823d8a26077ecc77aa5815f9ed8f4c5e6fd390ac851d4cc9060e090a3005b3461032c5760a036600319011261032c576123ca61243c565b6123d261246c565b6123db3361309b565b156103b05760ff604051926024358452166020830152606435604083015260018060a01b031660608201524260808201524360a08201527ff7ab826cedf9d005102eddf95e65f43597aef36a55ff09ee4f452204c83f4afc60c060043592a2005b6044359060ff8216820361032c57565b6064359060ff8216820361032c57565b6004359060ff8216820361032c57565b608435906001600160a01b038216820361032c57565b602435906001600160a01b038216820361032c57565b600435906001600160a01b038216820361032c57565b604435906001600160a01b038216820361032c57565b606435906001600160a01b038216820361032c57565b35906001600160a01b038216820361032c57565b60243590811515820361032c57565b3590811515820361032c57565b9181601f8401121561032c578235916001600160401b03831161032c576020838186019501011161032c57565b90601f801991011681019081106001600160401b0382111761255857604052565b634e487b7160e01b600052604160045260246000fd5b6001600160401b03811161255857601f01601f191660200190565b9291926125958261256e565b916125a36040519384612537565b82948184528183011161032c578281602093846000960137010152565b608090600319011261032c576004356001600160a01b038116810361032c57906024356001600160a01b038116810361032c57906044356001600160a01b038116810361032c579060643590565b908060209392818452848401376000828201840152601f01601f1916010190565b9035603e198236030181121561032c570190565b9035601e198236030181121561032c5701602081359101916001600160401b03821161032c578160051b3603831361032c57565b9035601e198236030181121561032c5701602081359101916001600160401b03821161032c57813603831361032c57565b9160209082815201919060005b8181106126c25750505090565b909192602080600192838060a01b036126da886124da565b1681520194019291016126b5565b81835290916001600160fb1b03831161032c5760209260051b809284830137010190565b612716818061262f565b9060e0835261012083019161272b8180612643565b809194604060e0880152526101408501906101408160051b8701019480926000915b838310612ff7575050505050806020612767920190612643565b60df1985850301610100860152808452602084019360208260051b82010194836000925b848410612fa4575050505050506127a5602082018261262f565b91838103602085015260408101926127bd8180612643565b8091956040855252606083019060608160051b8501019580926000915b838310612f5c5750505050508060206127f4920190612643565b90916020818603910152808452602084019360208260051b82010194836000925b848410612f275750505050505061282f604082018261262f565b91838103604085015260408101926128478180612643565b8091956040855252606083019060608160051b8501019580926000915b838310612edf57505050505080602061287e920190612643565b90916020818603910152808452602084019360208260051b82010194836000925b848410612e66575050505050506128b9606082018261262f565b91838103606085015260408101926128d18180612643565b8091956040855252606083019060608160051b8501019580926000915b838310612e15575050505050806020612908920190612643565b90916020818603910152808452602084019360208260051b82010194836000925b848410612d7b57505050505050612943608082018261262f565b918381036080850152604081019261295b8180612643565b8091956040855252606083019060608160051b8501019580926000915b838310612d25575050505050806020612992920190612643565b90916020818603910152808452602084019360208260051b82010194836000925b848410612cc8575050505050506129cd60a082018261262f565b9183810360a085015260408101926129e58180612643565b8091956040855252606083019060608160051b8501019580926000915b838310612c92575050505050806020612a1c920190612643565b90916020818603910152808452602084019360208260051b82010194836000925b848410612bf0575050505050508060c0612a5892019061262f565b9160c08183039101526040810191612a708180612643565b8091946040855252606083019060608160051b8501019480926000915b838310612b95575050505050806020612aa7920190612643565b90916020818503910152808352602083019260208260051b82010193836000925b848410612ad85750505050505090565b909192939495601f19828203018452612af1878461262f565b90612b1b612b10612b028480612677565b60408552604085019161260e565b926020810190612643565b90916020818503910152808352602083019060208160051b85010193836000905b838210612b5f575050505050506020806001929801940194019294939190612ac8565b909192939495602080612b87600193601f19888203018a52612b818b87612677565b9061260e565b980196019493920190612b3c565b909192939596602080612bdf600193605f198c8203018752612bb78b8761262f565b90612bd2612bc8612b028480612677565b9285810190612677565b918581850391015261260e565b999801959491909101920190612a8d565b90919293949796601f19828203018452612c0a898461262f565b90612c1b612b10612b028480612677565b90916020818503910152808352602083019060208160051b85010193836000905b838210612c62575050505050506020806001929a01940194019294939190979697612a3d565b909192939495602080612c84600193601f19888203018a52612b818b87612677565b980196019493920190612c3c565b90919293959897602080612cb66001938d605f19908203018752612bb78b8761262f565b9a9b9801959491909101920190612a02565b90919293949796602080612d13600193601f19868203018852612ceb8d8861262f565b90612d06612cfc612b028480612677565b9285810190612643565b91858185039101526126e8565b999a01969591909101930191906129b3565b90919293959897602080600192605f198d8203018652612d458a8661262f565b908280612d63612d558580612677565b60408652604086019161260e565b9301359101529a9b9801959491909101920190612978565b90919293949796601f19828203018452612d95898461262f565b6020612dbf612db5612da78480612677565b60408752604087019161260e565b9282810190612643565b929093828183039101528281520191906000905b808210612df457509899919850506020908101959460010193019190612929565b909192602080600192612e06876124fd565b15158152019401920190612dd3565b90919293959897602080600192605f198d8203018652612e358a8661262f565b9082612e4f81612e48612da78680612677565b94016124fd565b15159101529a9b98019594919091019201906128ee565b90919293949796601f19828203018452612e80898461262f565b6020612e92612db5612da78480612677565b929093828183039101528281520191906000905b808210612ec75750989991985050602090810195946001019301919061289f565b90919260208060019286358152019401920190612ea6565b90919293959897602080600192605f198d8203018652612eff8a8661262f565b908280612f0f612d558580612677565b9301359101529a9b9801959491909101920190612864565b90919293949796602080612f4a600193601f19868203018852612ceb8d8861262f565b999a0196959190910193019190612815565b90919293959897602080600192605f198d8203018652612f7c8a8661262f565b908280612f8c612d558580612677565b9301359101529a9b98019594919091019201906127da565b90919293949796602080612fe5600193601f19868203018852612fc78d8861262f565b90612fd8612cfc612b028480612677565b91858185039101526126a8565b999a019695919091019301919061278b565b90919293979660208060019261013f198b82030186526130178c8661262f565b9082613026612b028480612677565b9261303882888060a01b0392016124da565b16910152999a0195949190910192019061274d565b919261306b613079926060959897969860808652608086019161260e565b90838203602085015261270c565b9460408201520152565b9081602091031261032c5751801515810361032c5790565b6001600160a01b031660008181526001602052604090205460ff16613117576002546001600160a01b03168061318e575b506003546001600160a01b031680613126575b506005546001600160a01b031681148061311d575b61311757600052600660205260ff6040600020541661311257600090565b600190565b50600190565b508015156130f4565b60206024916040519283809263673448dd60e01b82528660048301525afa6000918161315d575b50156130df5761311757386130df565b61318091925060203d602011613187575b6131788183612537565b810190613083565b903861314d565b503d61316e565b60206024916040519283809263c699e63360e01b82528660048301525afa600091816131c5575b50156130cc5761311757386130cc565b6131df91925060203d602011613187576131788183612537565b90386131b5565b6001600160a01b0381166000908152600080516020613528833981519152602052604090205460ff16156132175750565b62b0d32560e11b60005260018060a01b0316600452600060245260446000fd5b90816000526000602052604060002060018060a01b03821660005260205260ff6040600020541615613267575050565b62b0d32560e11b60005260018060a01b031660045260245260446000fd5b6001600160a01b0381166000908152600080516020613508833981519152602052604090205460ff16156132b95750600090565b6001600160a01b0316600081815260008051602061350883398151915260205260408120805460ff191660011790553391906000805160206134c8833981519152907f2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d9080a4600190565b6001600160a01b0381166000908152600080516020613528833981519152602052604090205460ff16156133585750600090565b6001600160a01b0316600081815260008051602061352883398151915260205260408120805460ff191660011790553391907f2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d8180a4600190565b6000818152602081815260408083206001600160a01b038616845290915290205460ff16156133e3575050600090565b6000818152602081815260408083206001600160a01b0395909516808452949091528120805460ff19166001179055339291907f2f8788117e7eff1d82e926ec794901d17c78024a50270940304540a733656f0d9080a4600190565b6000818152602081815260408083206001600160a01b038616845290915290205460ff1661346e575050600090565b6000818152602081815260408083206001600160a01b0395909516808452949091528120805460ff19169055339291907ff6391f5c32d9c69d2a47ea670b442974b53935d1edc7fd64eb21e047a839171b9080a460019056fe7263713b378e463b1abfeab89a5672633e678c6915a90afe819fcbb4e75efb434377386e2795aba8c0ce23a1e6e67bac790e4b4166f14b7e9365049ab946f8c0b00d7b61471c2960dc5a4d1f926fa468cd1498e9d401718feeba8f256f114bd8ad3228b676f7d3cd4284a5443f17f1962b36e491b30a40b2405849e597ba5fb5a264697066735822122078c9db8ff88d38e262ba3e7b996d52af287826d2dbabdd5ff90d3b5421c5bf2064736f6c634300081b0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

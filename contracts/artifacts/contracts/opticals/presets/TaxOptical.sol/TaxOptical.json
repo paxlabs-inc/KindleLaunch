@@ -1,0 +1,256 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "TaxOptical",
+  "sourceName": "contracts/opticals/presets/TaxOptical.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_poolRegistry",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_owner",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_buyTaxBps",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_sellTaxBps",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "NotOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotPool",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "TaxTooHigh",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "MAX_TAX_BPS",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "afterFeeDistribution",
+      "outputs": [
+        {
+          "internalType": "bytes4",
+          "name": "",
+          "type": "bytes4"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "afterSwap",
+      "outputs": [
+        {
+          "internalType": "bytes4",
+          "name": "",
+          "type": "bytes4"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "feeAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "beforeFeeDistribution",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "adjustedFee",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "isBuy",
+          "type": "bool"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amountIn",
+          "type": "uint256"
+        }
+      ],
+      "name": "beforeSwap",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "proceed",
+          "type": "bool"
+        },
+        {
+          "internalType": "int256",
+          "name": "amountDelta",
+          "type": "int256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "buyTaxBps",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getFlags",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "poolRegistry",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "sellTaxBps",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x610100346100d057601f6104b038819003918201601f19168301916001600160401b038311848410176100d5578084926080946040528339810103126100d057610048816100eb565b90610055602082016100eb565b606060408301519201519260805260a0526103e881116100bf576103e882116100bf5760c05260e0526040516103b09081610100823960805181610182015260a0518161023a015260c05181818161014901526102e2015260e05181818161010e01526103550152f35b632bc7b84d60e21b60005260046000fd5b600080fd5b634e487b7160e01b600052604160045260246000fd5b51906001600160a01b03821682036100d05756fe608080604052600436101561001357600080fd5b60003560e01c9081632c597de914610285575080636cc7149d146102695780638da5cb5b14610224578063ae3bd4bd146101f8578063ae7e71d9146101b1578063afcff50f1461016c578063c473413a14610131578063cffd129c146100f6578063f74c1c1a146100b85763f80d2cc71461008d57600080fd5b346100b35760403660031901126100b3576100a66102a0565b5060206040516024358152f35b600080fd5b346100b35760a03660031901126100b3576100d16102a0565b506100da6102b6565b506100e36102cc565b50604051637ba60e0d60e11b8152602090f35b346100b35760003660031901126100b35760206040517f00000000000000000000000000000000000000000000000000000000000000008152f35b346100b35760003660031901126100b35760206040517f00000000000000000000000000000000000000000000000000000000000000008152f35b346100b35760003660031901126100b3576040517f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168152602090f35b346100b35760803660031901126100b3576101ca6102a0565b506101d36102b6565b5060406101ea6101e16102cc565b606435906102db565b825191151582526020820152f35b346100b35760403660031901126100b3576102116102a0565b5060405163ae3bd4bd60e01b8152602090f35b346100b35760003660031901126100b3576040517f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168152602090f35b346100b35760003660031901126100b357602060405160018152f35b346100b35760003660031901126100b357806103e860209252f35b600435906001600160a01b03821682036100b357565b602435906001600160a01b03821682036100b357565b6044359081151582036100b357565b15610353577f0000000000000000000000000000000000000000000000000000000000000000905b81156103495781810291818304149015171561033357612710900490600160ff1b82146103335760019160000390565b634e487b7160e01b600052601160045260246000fd5b5050600190600090565b7f00000000000000000000000000000000000000000000000000000000000000009061030356fea264697066735822122073169ecd57bb2a3ccd4619a7f27df06a24f672f5fc48fb94f44dbd6ae92a8f0664736f6c634300081b0033",
+  "deployedBytecode": "0x608080604052600436101561001357600080fd5b60003560e01c9081632c597de914610285575080636cc7149d146102695780638da5cb5b14610224578063ae3bd4bd146101f8578063ae7e71d9146101b1578063afcff50f1461016c578063c473413a14610131578063cffd129c146100f6578063f74c1c1a146100b85763f80d2cc71461008d57600080fd5b346100b35760403660031901126100b3576100a66102a0565b5060206040516024358152f35b600080fd5b346100b35760a03660031901126100b3576100d16102a0565b506100da6102b6565b506100e36102cc565b50604051637ba60e0d60e11b8152602090f35b346100b35760003660031901126100b35760206040517f00000000000000000000000000000000000000000000000000000000000000008152f35b346100b35760003660031901126100b35760206040517f00000000000000000000000000000000000000000000000000000000000000008152f35b346100b35760003660031901126100b3576040517f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168152602090f35b346100b35760803660031901126100b3576101ca6102a0565b506101d36102b6565b5060406101ea6101e16102cc565b606435906102db565b825191151582526020820152f35b346100b35760403660031901126100b3576102116102a0565b5060405163ae3bd4bd60e01b8152602090f35b346100b35760003660031901126100b3576040517f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168152602090f35b346100b35760003660031901126100b357602060405160018152f35b346100b35760003660031901126100b357806103e860209252f35b600435906001600160a01b03821682036100b357565b602435906001600160a01b03821682036100b357565b6044359081151582036100b357565b15610353577f0000000000000000000000000000000000000000000000000000000000000000905b81156103495781810291818304149015171561033357612710900490600160ff1b82146103335760019160000390565b634e487b7160e01b600052601160045260246000fd5b5050600190600090565b7f00000000000000000000000000000000000000000000000000000000000000009061030356fea264697066735822122073169ecd57bb2a3ccd4619a7f27df06a24f672f5fc48fb94f44dbd6ae92a8f0664736f6c634300081b0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

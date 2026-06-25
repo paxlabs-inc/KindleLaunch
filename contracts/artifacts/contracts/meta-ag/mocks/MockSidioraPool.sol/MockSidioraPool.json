@@ -1,0 +1,187 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "MockSidioraPool",
+  "sourceName": "contracts/meta-ag/mocks/MockSidioraPool.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "getPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getReserves",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "price",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "realUsdl",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "revertOnGetPrice",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "revertOnGetReserves",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "p",
+          "type": "uint256"
+        }
+      ],
+      "name": "setPrice",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "v",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "r",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "t",
+          "type": "uint256"
+        }
+      ],
+      "name": "setReserves",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bool",
+          "name": "v",
+          "type": "bool"
+        }
+      ],
+      "name": "setRevertOnGetPrice",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bool",
+          "name": "v",
+          "type": "bool"
+        }
+      ],
+      "name": "setRevertOnGetReserves",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "tokenReserve",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "virtualUsdl",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x60808060405234601557610331908161001b8239f35b600080fdfe608080604052600436101561001357600080fd5b60003560e01c9081630902f1ac1461027d575080632c607b051461025f57806335392ec714610241578063404cedc41461021b578063713f2621146101f657806390fd6673146101d357806391b7f5ed146101ba57806398d5fdca1461014d578063a035b1fe1461012f578063cbcb317114610111578063eecc65c8146100e05763fd3630a6146100a357600080fd5b346100db5760203660031901126100db576004358015158091036100db5761ff006004549160081b169061ff00191617600455600080f35b600080fd5b346100db5760203660031901126100db576004358015158091036100db5760ff801960045416911617600455600080f35b346100db5760003660031901126100db576020600354604051908152f35b346100db5760003660031901126100db576020600054604051908152f35b346100db5760003660031901126100db5760ff60045416610175576020600054604051908152f35b60405162461bcd60e51b815260206004820152601e60248201527f4d6f636b536964696f7261506f6f6c3a20666f726365642072657665727400006044820152606490fd5b346100db5760203660031901126100db57600435600055005b346100db5760003660031901126100db57602060ff600454166040519015158152f35b346100db5760603660031901126100db57600435600155602435600255604435600355005b346100db5760003660031901126100db57602060ff60045460081c166040519015158152f35b346100db5760003660031901126100db576020600154604051908152f35b346100db5760003660031901126100db576020600254604051908152f35b346100db5760003660031901126100db5760ff60045460081c166102b95760606001546002546003549060405192835260208301526040820152f35b62461bcd60e51b815260206004820152601e60248201527f4d6f636b536964696f7261506f6f6c3a20666f726365642072657665727400006044820152606490fdfea264697066735822122081efabd69ceb4c74b00bc417aafae5cf6787d8238099c3d59d0a19344cb0f2f964736f6c634300081b0033",
+  "deployedBytecode": "0x608080604052600436101561001357600080fd5b60003560e01c9081630902f1ac1461027d575080632c607b051461025f57806335392ec714610241578063404cedc41461021b578063713f2621146101f657806390fd6673146101d357806391b7f5ed146101ba57806398d5fdca1461014d578063a035b1fe1461012f578063cbcb317114610111578063eecc65c8146100e05763fd3630a6146100a357600080fd5b346100db5760203660031901126100db576004358015158091036100db5761ff006004549160081b169061ff00191617600455600080f35b600080fd5b346100db5760203660031901126100db576004358015158091036100db5760ff801960045416911617600455600080f35b346100db5760003660031901126100db576020600354604051908152f35b346100db5760003660031901126100db576020600054604051908152f35b346100db5760003660031901126100db5760ff60045416610175576020600054604051908152f35b60405162461bcd60e51b815260206004820152601e60248201527f4d6f636b536964696f7261506f6f6c3a20666f726365642072657665727400006044820152606490fd5b346100db5760203660031901126100db57600435600055005b346100db5760003660031901126100db57602060ff600454166040519015158152f35b346100db5760603660031901126100db57600435600155602435600255604435600355005b346100db5760003660031901126100db57602060ff60045460081c166040519015158152f35b346100db5760003660031901126100db576020600154604051908152f35b346100db5760003660031901126100db576020600254604051908152f35b346100db5760003660031901126100db5760ff60045460081c166102b95760606001546002546003549060405192835260208301526040820152f35b62461bcd60e51b815260206004820152601e60248201527f4d6f636b536964696f7261506f6f6c3a20666f726365642072657665727400006044820152606490fdfea264697066735822122081efabd69ceb4c74b00bc417aafae5cf6787d8238099c3d59d0a19344cb0f2f964736f6c634300081b0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

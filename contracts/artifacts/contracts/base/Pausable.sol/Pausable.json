@@ -1,0 +1,34 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "Pausable",
+  "sourceName": "contracts/base/Pausable.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "NotPaused",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "Paused",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "paused",
+          "type": "bool"
+        }
+      ],
+      "name": "PauseToggled",
+      "type": "event"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

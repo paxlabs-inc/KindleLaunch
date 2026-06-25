@@ -1,0 +1,327 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "BuybackBurnOptical",
+  "sourceName": "contracts/opticals/presets/BuybackBurnOptical.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_poolRegistry",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_owner",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_buybackBps",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "NotOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NotPool",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "NothingToExecute",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "BuybackAccumulated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "usdlUsed",
+          "type": "uint256"
+        }
+      ],
+      "name": "BuybackExecuted",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "DEAD_ADDRESS",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "accumulatedUsdl",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "afterFeeDistribution",
+      "outputs": [
+        {
+          "internalType": "bytes4",
+          "name": "",
+          "type": "bytes4"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "afterSwap",
+      "outputs": [
+        {
+          "internalType": "bytes4",
+          "name": "",
+          "type": "bytes4"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "feeAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "beforeFeeDistribution",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "adjustedFee",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "beforeSwap",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "proceed",
+          "type": "bool"
+        },
+        {
+          "internalType": "int256",
+          "name": "amountDelta",
+          "type": "int256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "buybackBps",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        }
+      ],
+      "name": "getAccumulatedUsdl",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getFlags",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        }
+      ],
+      "name": "markBuybackExecuted",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "poolRegistry",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x60e0346100d357601f6105e538819003918201601f19168301916001600160401b038311848410176100d8578084926060946040528339810103126100d357610047816100ee565b906040610056602083016100ee565b9101519160805260a05261138881116100a45760c0526040516104e29081610103823960805181610166015260a05181818161024e01526102b4015260c05181818161012d01526103ee0152f35b60405162461bcd60e51b81526020600482015260076024820152664d61782035302560c81b6044820152606490fd5b600080fd5b634e487b7160e01b600052604160045260246000fd5b51906001600160a01b03821682036100d35756fe608080604052600436101561001357600080fd5b60003560e01c9081632dccbd2d1461037b575080634e6fd6c41461035e5780636a5ad214146102995780636cc7149d1461027d5780638da5cb5b14610238578063a7746391146101fe578063ae3bd4bd146101d2578063ae7e71d914610195578063afcff50f14610150578063baa9f0fa14610115578063f74c1c1a146100d75763f80d2cc7146100a357600080fd5b346100d25760403660031901126100d25760206100ca6100c16103b1565b602435906103ec565b604051908152f35b600080fd5b346100d25760a03660031901126100d2576100f06103b1565b506100f96103c7565b506101026103dd565b50604051637ba60e0d60e11b8152602090f35b346100d25760003660031901126100d25760206040517f00000000000000000000000000000000000000000000000000000000000000008152f35b346100d25760003660031901126100d2576040517f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168152602090f35b346100d25760803660031901126100d2576101ae6103b1565b506101b76103c7565b506101c06103dd565b50604080516001815260006020820152f35b346100d25760403660031901126100d2576101eb6103b1565b5060405163ae3bd4bd60e01b8152602090f35b346100d25760203660031901126100d2576001600160a01b0361021f6103b1565b1660005260006020526020604060002054604051908152f35b346100d25760003660031901126100d2576040517f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168152602090f35b346100d25760003660031901126100d257602060405160048152f35b346100d25760203660031901126100d2576102b26103b1565b7f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316330361034d576001600160a01b0316600081815260208190526040902054801561033c5760207f6f71aa2d970d41c4318a3de6779f2c27c76b0014f8e9a9df4ee6c33d1141d11e91836000526000825260006040812055604051908152a2005b633b3280b560e01b60005260046000fd5b6330cd747160e01b60005260046000fd5b346100d25760003660031901126100d257602060405161dead8152f35b346100d25760203660031901126100d2576020906001600160a01b0361039f6103b1565b16600052600082526040600020548152f35b600435906001600160a01b03821682036100d257565b602435906001600160a01b03821682036100d257565b6044359081151582036100d257565b7f000000000000000000000000000000000000000000000000000000000000000080156104a75780830290838204148315171561043c5761271090049081610452575b50810390811161043c5790565b634e487b7160e01b600052601160045260246000fd5b6001600160a01b0316600081815260208190526040902080548381019190821061043c57557fa45cc8f36a8b8e881117a3fb7d9ab7ee0103f08755bdf392670220c5082a579d6020604051848152a23861042f565b50509056fea2646970667358221220fb220f243b487638ae007c606fd769d02a73f81093e1653475b93e464627b2d664736f6c634300081b0033",
+  "deployedBytecode": "0x608080604052600436101561001357600080fd5b60003560e01c9081632dccbd2d1461037b575080634e6fd6c41461035e5780636a5ad214146102995780636cc7149d1461027d5780638da5cb5b14610238578063a7746391146101fe578063ae3bd4bd146101d2578063ae7e71d914610195578063afcff50f14610150578063baa9f0fa14610115578063f74c1c1a146100d75763f80d2cc7146100a357600080fd5b346100d25760403660031901126100d25760206100ca6100c16103b1565b602435906103ec565b604051908152f35b600080fd5b346100d25760a03660031901126100d2576100f06103b1565b506100f96103c7565b506101026103dd565b50604051637ba60e0d60e11b8152602090f35b346100d25760003660031901126100d25760206040517f00000000000000000000000000000000000000000000000000000000000000008152f35b346100d25760003660031901126100d2576040517f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168152602090f35b346100d25760803660031901126100d2576101ae6103b1565b506101b76103c7565b506101c06103dd565b50604080516001815260006020820152f35b346100d25760403660031901126100d2576101eb6103b1565b5060405163ae3bd4bd60e01b8152602090f35b346100d25760203660031901126100d2576001600160a01b0361021f6103b1565b1660005260006020526020604060002054604051908152f35b346100d25760003660031901126100d2576040517f00000000000000000000000000000000000000000000000000000000000000006001600160a01b03168152602090f35b346100d25760003660031901126100d257602060405160048152f35b346100d25760203660031901126100d2576102b26103b1565b7f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316330361034d576001600160a01b0316600081815260208190526040902054801561033c5760207f6f71aa2d970d41c4318a3de6779f2c27c76b0014f8e9a9df4ee6c33d1141d11e91836000526000825260006040812055604051908152a2005b633b3280b560e01b60005260046000fd5b6330cd747160e01b60005260046000fd5b346100d25760003660031901126100d257602060405161dead8152f35b346100d25760203660031901126100d2576020906001600160a01b0361039f6103b1565b16600052600082526040600020548152f35b600435906001600160a01b03821682036100d257565b602435906001600160a01b03821682036100d257565b6044359081151582036100d257565b7f000000000000000000000000000000000000000000000000000000000000000080156104a75780830290838204148315171561043c5761271090049081610452575b50810390811161043c5790565b634e487b7160e01b600052601160045260246000fd5b6001600160a01b0316600081815260208190526040902080548381019190821061043c57557fa45cc8f36a8b8e881117a3fb7d9ab7ee0103f08755bdf392670220c5082a579d6020604051848152a23861042f565b50509056fea2646970667358221220fb220f243b487638ae007c606fd769d02a73f81093e1653475b93e464627b2d664736f6c634300081b0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
