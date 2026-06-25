@@ -36,18 +36,22 @@ jobs:
       TEST_DATABASE_URL: postgres://kindlelaunch:kindlelaunch@localhost:5432/kindlelaunch_test?sslmode=disable
       TEST_REDIS_URL: redis://localhost:6379/0
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version: ${{ env.GO_VERSION }}
           cache: false
 
+      # Install only — `make lint` runs golangci-lint per module (matches `make ci`).
+      # v2.12 is built with Go 1.25, required to lint this repo's go 1.25.0 modules
+      # and to read the v2-format .golangci.yaml. Needs action v7+ for golangci-lint v2.
       - name: Install golangci-lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v9
         with:
-          version: latest
+          version: v2.12
           install-mode: binary
+          install-only: true
 
       - name: build
         run: make build
@@ -74,16 +78,16 @@ jobs:
       run:
         working-directory: contracts
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 22
           cache: pnpm
           cache-dependency-path: contracts/pnpm-lock.yaml
 
@@ -115,7 +119,7 @@ jobs:
           - { service: core/stats-workers,  bin: statsd,   image: kindlelaunch-core-stats-workers }
           - { service: core/trading-charts, bin: chartsd,  image: kindlelaunch-core-trading-charts }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
