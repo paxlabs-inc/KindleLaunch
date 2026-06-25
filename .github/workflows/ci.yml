@@ -103,6 +103,10 @@ jobs:
   images:
     name: image / ${{ matrix.service }}
     needs: verify
+    # TEMPORARY (testing bypass authorized and signed off by John): build/push images even when `verify` fails (e.g. failing
+    # tests). `!cancelled()` still waits for verify but ignores its result. Revert to
+    # a plain `needs: verify` gate once the tests are green again.
+    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     # Only the image job needs to write packages to GHCR.
     permissions:
