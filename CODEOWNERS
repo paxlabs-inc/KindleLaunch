@@ -1,0 +1,23 @@
+# Global owners
+* @Sidiora-Technologies/owners
+
+# Smart contracts and on-chain deployments
+/contracts/ @Sidiora-Technologies/contracts
+/contracts/deployments/ @Sidiora-Technologies/contracts @Sidiora-Technologies/security
+
+# Go backend
+/core/ @Sidiora-Technologies/backend
+/media/ @Sidiora-Technologies/backend
+/protocol/ @Sidiora-Technologies/backend
+/shared/ @Sidiora-Technologies/backend
+
+# CI, build, and deployment plumbing
+/.github/ @Sidiora-Technologies/platform
+/deploy/ @Sidiora-Technologies/platform
+/Makefile @Sidiora-Technologies/platform
+
+# Knowledge specs and agent docs
+/knowledge/ @Sidiora-Technologies/architects
+/CLAUDE.md @Sidiora-Technologies/architects
+/AGENTS.md @Sidiora-Technologies/architects
+/MATRIX.md @Sidiora-Technologies/architects
