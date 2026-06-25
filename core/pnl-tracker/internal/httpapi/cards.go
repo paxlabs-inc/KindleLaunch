@@ -123,9 +123,12 @@ func ogImage(deps CardDeps) http.HandlerFunc {
 // writePNG writes PNG bytes with immutable-friendly caching headers.
 func writePNG(w http.ResponseWriter, png []byte) {
 	w.Header().Set("Content-Type", "image/png")
+	w.Header().Set("X-Content-Type-Options", "nosniff")
 	w.Header().Set("Cache-Control", "public, max-age=86400, immutable")
 	w.WriteHeader(http.StatusOK)
-	if _, err := w.Write(png); err != nil {
+	// G705 false positive: png is server-rendered image bytes, served as
+	// image/png with nosniff (no MIME sniffing), and never reflects client input.
+	if _, err := w.Write(png); err != nil { //nolint:gosec // PNG image bytes, not HTML
 		return
 	}
 }
