@@ -1,0 +1,288 @@
+# protocol.freeze.lock — sidiora-contracts/protocol
+# Generated: 2026-04-26T04:56Z
+# Auditor: Cascade (automated source audit, indexer-oriented)
+# Network: Paxeer (chainId 125)
+# Addresses source: backend/deployments/paxeer-network-addresses.json
+# ABIs source: backend/deployments/abis/
+
+## Group Identity
+- **Group:** protocol
+- **Path:** smart-contracts/contracts/protocol/
+- **Contracts:** GovernanceModule, ProtocolConfig, Timelock, Treasury
+- **Language:** Solidity ^0.8.24 (LicenseRef-Paxlabs-HyperPax-OS-Protocol)
+- **Role:** Governance + parameter store + treasury + delay-anchored
+  execution. Timelock is the security root for the entire protocol — every
+  UUPS upgrade and admin setter on Launchpad + Meta-AG flows through it.
+  Currently ADMIN-MODE governance (operator can bypass) until SID full
+  decentralization.
+
+---
+
+## Timelock
+
+- **ABI:** `backend/deployments/abis/Timelock.json`
+- **Address:** `paxeer-network-addresses.json#Timelock` —
+  `0xEc2B7b640469607A45615385e713e656B7e667b9`
+- **Pattern:** IMMUTABLE (NOT upgradeable). Trust anchor.
+- **minDelay:** `paxeer-network-addresses.json#_meta.timelockDelay = 172800`
+  (48 hours). Hardcoded at deploy.
+- **proposer:** `GovernanceModule_proxy` (queues passed proposals)
+- **guardian:** Initial deployer (`paxeer-network-addresses.json#_meta.guardian` =
+  `0xfc263db0dd9087874B0B5c388d50704B83138F9B`)
+
+### Functions
+
+External:
+- `queueTransaction(target, value, data, eta)` → `txHash` — proposer only.
+  Reverts on `eta < block.timestamp + minDelay`. Reverts on duplicate hash.
+- `executeTransaction(target, value, data, eta)` → `bytes` — anyone may call
+  AFTER `block.timestamp >= eta`. Performs `target.call{value}(data)`. Wipes
+  the queued flag before executing (CEI ordering).
+- `cancelTransaction(target, value, data, eta)` — guardian only. Cancels a
+  queued tx without executing.
+- `setProposer(newProposer)` — current proposer only.
+- `setGuardian(newGuardian)` — current guardian only.
+
+Views:
+- `minDelay()` (immutable)
+- `proposer()`, `guardian()`
+- `queuedTransactions(txHash)` → `bool`
+- `getMinDelay()` → `uint256`
+- `receive()` payable — accepts ETH/native pax for `value` payouts
+
+### Events to index
+- `TransactionQueued(txHash, target, value, data, eta)`
+- `TransactionExecuted(txHash, target, value, data, eta)`
+- `TransactionCancelled(txHash)`
+- `ProposerChanged(oldProposer, newProposer)`
+- `GuardianChanged(oldGuardian, newGuardian)`
+
+### Reads / Writes
+- Reads: nothing external
+- Writes: `queuedTransactions[txHash]`, `proposer`, `guardian`. Calls
+  `target.call{value}(data)` on execute (untrusted external call —
+  `success == false` reverts the entire tx).
+
+### Indexer notes
+- This is the SECURITY MIRROR — every protocol-level admin change in the
+  ecosystem produces a `TransactionQueued → TransactionExecuted` pair.
+  The decoder must dispatch on the `target` and `data` selector to know
+  which contract is being mutated (e.g. UUPS `upgradeToAndCall(addr,bytes)`,
+  `ProtocolConfig.setBaseFeeBps(uint256)`, `OracleHub.setPrimaryOracle(addr)`).
+- `txHash = keccak256(abi.encode(target, value, data, eta))` — deterministic
+  identifier; same hash collides on a re-queue (intentional).
+- `data` field is large (bytes) and copied verbatim to the event. Index it
+  truncated for searchability + store the full raw log for replay.
+
+---
+
+## GovernanceModule
+
+- **ABI:** `backend/deployments/abis/GovernanceModule.json`
+- **Address proxy:** `paxeer-network-addresses.json#GovernanceModule_proxy` —
+  `0xAA154A446f18E80E70b53357597E40CDD1D07E37`
+- **Address impl:** `paxeer-network-addresses.json#GovernanceModule_impl` —
+  `0xe955b10d82e1692A14Bd361366f55d7E9d405Bbd`
+- **Pattern:** UUPS proxy. Two modes: ADMIN-bypass (initial) and full
+  SID-token weighted voting. `adminModeActive` is irreversibly flipped off
+  by `deactivateAdminMode()`.
+- **votingToken:** SID — `paxeer-network-addresses.json#tokens.SID =
+  0x86949e4CdB89496490890B67C9cfF63eD8efB4b1`
+
+### Functions
+
+External (writes):
+- `propose(targets[], values[], calldatas[], description)` → `proposalId` —
+  caller must hold ≥ `proposalThreshold` SID. Voting starts at `block.number+1`
+  and runs for `votingPeriod` blocks.
+- `castVote(proposalId, support)` — one vote per (proposalId, voter).
+  Weight = SID balance at call time (NOT a snapshot — see indexer note).
+- `execute(proposalId, eta)` — after voting ends. Requires `forVotes >=
+  quorumVotes` AND `forVotes > againstVotes`. Queues every action via
+  `Timelock.queueTransaction`.
+- `cancel(proposalId)` — proposer or `ADMIN_ROLE` (pre-execution).
+- `adminExecute(target, value, data, eta)` — `ADMIN_ROLE` only and ONLY if
+  `adminModeActive`. Bypasses voting; queues directly via Timelock.
+- `deactivateAdminMode()` — `ADMIN_ROLE` only. Irreversible.
+
+Admin:
+- `initialize(votingToken, timelock, admin, proposalThreshold, votingPeriod, quorumVotes)`
+- UUPS `_authorizeUpgrade`
+
+Views:
+- `proposals(proposalId)` → public Proposal struct
+- `hasVoted(proposalId, account)` → `bool`
+- `voteSnapshot(proposalId, account)` → `uint256` (balance at vote time)
+- `getProposalState(proposalId)` → enum `ProposalState{Pending,Active,Defeated,Succeeded,Queued,Executed,Cancelled}`
+- `votingToken()`, `timelock()`, `proposalThreshold()`, `votingPeriod()`,
+  `quorumVotes()`, `proposalCount()`, `adminModeActive()`
+
+### Events to index
+- `ProposalCreated(proposalId, proposer, description)`
+- `VoteCast(proposalId, voter, support, weight)`
+- `ProposalExecuted(proposalId)`
+- `ProposalCancelled(proposalId)`
+- `AdminModeDeactivated()` — one-shot, irreversible. Critical signal for
+  the frontend to retire admin-only UI surfaces.
+
+### Reads / Writes
+- Reads: `votingToken.balanceOf(account)` (NOT a checkpointed snapshot —
+  voters can split-and-vote with multiple wallets if they transfer SID
+  between casts).
+- Writes: `proposals[id]`, `hasVoted`, `voteSnapshot`. Calls
+  `ITimelockQueue.queueTransaction(...)` per action on execute.
+
+### Indexer notes
+- `getProposalState` is computed on-the-fly from block.number — index it
+  by storing `endBlock`, `forVotes`, `againstVotes`, `executed`, `cancelled`
+  and recompute state in the API layer. Do NOT cache the enum result.
+- Vote weight is "balance at vote-cast time", not a snapshot at proposal
+  creation. This means SID-buying-after-proposal is a vote-buying vector
+  that the indexer should surface (alert on rapid SID transfers + vote
+  patterns within a single proposal window).
+- `description` is a free-form string and may contain off-chain metadata
+  (Discord links, IPFS hashes). Index full-text.
+
+---
+
+## ProtocolConfig
+
+- **ABI:** `backend/deployments/abis/ProtocolConfig.json` (impl)
+       and `backend/deployments/abis/IProtocolConfig.json` (interface)
+- **Address proxy:** `paxeer-network-addresses.json#ProtocolConfig_proxy` —
+  `0x325e6Fb9c3505A35785365674089aEf8497C697B`
+- **Address impl:** `paxeer-network-addresses.json#ProtocolConfig_impl` —
+  `0xC826788820FB4310B60337Db127261C744D37827`
+- **Pattern:** UUPS proxy. Single source of truth for global parameters.
+- **USDL:** `paxeer-network-addresses.json#tokens.USDL =
+  0x7c69c84daAEe90B21eeCABDb8f0387897E9B7B37`
+
+### Initial values (set in `initialize`, mutable via setters)
+| Parameter              | Default                                                |
+| ---------------------- | ------------------------------------------------------ |
+| `virtualUsdlDefault`   | `10_000e6` (10,000 USDL)                               |
+| `virtualTokenDefault`  | `1_000_000_000e6` (1B tokens at 6 decimals)            |
+| `minFeeBps`            | `10` (0.10%)                                           |
+| `maxFeeBps`            | `300` (3.00%)                                          |
+| `baseFeeBps`           | `30` (0.30%)                                           |
+| `protocolFeeBps`       | `1000` (10% of pool fees → Treasury)                   |
+| `feeDecayRate`         | `500`                                                  |
+| `volatilityWeight`     | `100`                                                  |
+| `concentrationWeight`  | `100`                                                  |
+| `creationFee`          | `100e6` (100 USDL)                                     |
+
+### Functions
+
+External (admin-only setters, `DEFAULT_ADMIN_ROLE` = Timelock):
+- `setBaseFeeBps(uint256)` — must be ≤ `maxFeeBps`
+- `setProtocolFeeBps(uint256)` — must be ≤ 5000 (max 50%)
+- `setCreationFee(uint256)`
+- `setFeeWeights(decayRate, volWeight, concWeight)`
+- `setVirtualDefaults(virtualUsdl, virtualToken)`
+- `initialize(usdl, eventEmitter, admin)`
+- UUPS `_authorizeUpgrade`
+
+Views (every parameter is `public override`):
+- `usdlAddress()`, `virtualUsdlDefault()`, `virtualTokenDefault()`,
+  `minFeeBps()`, `maxFeeBps()`, `baseFeeBps()`, `protocolFeeBps()`,
+  `feeDecayRate()`, `volatilityWeight()`, `concentrationWeight()`,
+  `creationFee()`, `eventEmitter()`
+
+### Events to index (routed through `IEventEmitter.ConfigUpdated`)
+Each setter emits one or more `ConfigUpdated(keyHash, oldValue, newValue, ts, blk)`
+events. Key hashes:
+- `keccak256("baseFeeBps")`
+- `keccak256("protocolFeeBps")`
+- `keccak256("creationFee")`
+- `keccak256("feeDecayRate")`
+- `keccak256("volatilityWeight")`
+- `keccak256("concentrationWeight")`
+- `keccak256("virtualUsdlDefault")`
+- `keccak256("virtualTokenDefault")`
+
+### Reads / Writes
+- Reads: nothing external
+- Writes: each parameter slot, then calls `IEventEmitter.emitConfigUpdated`
+
+### Indexer notes
+- `setFeeWeights` and `setVirtualDefaults` emit MULTIPLE `ConfigUpdated`
+  events from a single tx (one per parameter). Indexer should treat them as
+  atomic — group by `txHash`.
+- `protocolFeeBps` is the protocol's fee revenue rate. Treasury accrual rate
+  = `Σ(swap.fee * protocolFeeBps / 10000)` over time.
+- These params drive `SidioraPool._calculateFee` via `FeeLib.calculateDynamicFee`
+  on every swap. A `ConfigUpdated(baseFeeBps,...)` invalidates any cached
+  fee predictions.
+
+---
+
+## Treasury
+
+- **ABI:** `backend/deployments/abis/Treasury.json` (impl)
+       and `backend/deployments/abis/ITreasury.json` (interface)
+- **Address proxy:** `paxeer-network-addresses.json#Treasury_proxy` —
+  `0xe3705EaC51000F40e44D8039DF394f8b8FBAFaA3`
+- **Address impl:** `paxeer-network-addresses.json#Treasury_impl` —
+  `0xc72eD2E7422290b0D6ae6FbBf461D8e2c4820A62`
+- **Pattern:** UUPS proxy. `DEPOSITOR_ROLE` granted to `FeeAccumulator_proxy`.
+  Also wired as `feeCollector` for PECOR engine
+  (`paxeer-network-addresses.json#_meta_pecor.feeCollector`).
+
+### Functions
+
+External (writes):
+- `deposit(token, amount)` — `DEPOSITOR_ROLE` only. Pulls `amount` of `token`
+  from caller via `safeTransferFrom`. Caller must have approved Treasury.
+- `withdraw(token, to, amount)` — `DEFAULT_ADMIN_ROLE` (Timelock) only.
+
+Admin:
+- `initialize(eventEmitter, admin)`
+- UUPS `_authorizeUpgrade`
+
+Views:
+- `getBalance(token)` → `uint256` (internal accounting, NOT raw ERC20
+  balance — the two should match unless someone forces tokens via
+  `transfer` directly to Treasury, in which case those become unaccounted)
+
+### Events to index
+- `Deposited(token, depositor, amount)`
+- `Withdrawn(token, recipient, amount)`
+
+### Reads / Writes
+- Reads: nothing external
+- Writes: `_balances[token]`. ERC20 `safeTransferFrom` (deposit) and
+  `safeTransfer` (withdraw).
+
+### Indexer notes
+- Treasury accounting uses an internal map. Direct ERC20 `Transfer` events
+  to Treasury that bypass `deposit()` are NOT reflected in `getBalance`.
+  Reconciler should periodically diff `getBalance(token) vs ERC20.balanceOf(treasury)`
+  and surface positive deltas as "untracked treasury revenue".
+- `feeCollector` for the PECOR engine flows here too — Treasury is the
+  unified protocol treasury for both Launchpad fees (via FeeAccumulator
+  protocol cut) and PECOR engine swap fees (via direct collector route in
+  PECOR.collectFees).
+
+---
+
+## Cross-cutting reads / writes summary
+
+| External Contract | Read by              | Written by                                                           |
+| ----------------- | -------------------- | -------------------------------------------------------------------- |
+| `Timelock`        | GovernanceModule     | GovernanceModule (`queueTransaction`); anyone (`executeTransaction`) |
+| `GovernanceModule`| —                    | external proposers                                                   |
+| `ProtocolConfig`  | SidioraPool, Quoter, MetaAGRouter (indirectly), FeeAccumulator | Timelock (via setters) |
+| `Treasury`        | FeeAccumulator (`deposit`); PECOR (`collectFees` via collector wire) | Timelock (`withdraw`) |
+| `EventEmitter`    | ProtocolConfig (writes events)                                  | —                          |
+| `USDL ERC20`      | Treasury (transferFrom/transfer); FeeAccumulator | external                                              |
+| `SID ERC20`       | GovernanceModule (`balanceOf` for vote weight) | external                                              |
+
+## Coverage caveats
+- This freeze locks the on-chain SURFACE only. The ADMIN→Timelock-only
+  transition for PECOR + Meta-AG is in
+  `paxeer-network-addresses.json#_meta_pecor.wiringPending = ["TRANSFER_ADMIN_TO_TIMELOCK"]`.
+  Until that step lands, every meta-ag UUPS upgrade can bypass Timelock —
+  surface this as a security warning until the wiring closes.
+- `GovernanceModule.adminModeActive` is currently TRUE (irreversibly toggle
+  to FALSE before SID full decentralization). Surface its state on every
+  governance-related dashboard.

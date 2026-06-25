@@ -1,0 +1,267 @@
+# data.freeze.lock — sidiora-contracts/data
+# Generated: 2026-04-26T04:56Z
+# Auditor: Cascade (automated source audit, indexer-oriented)
+# Network: Paxeer (chainId 125)
+# Addresses source: backend/deployments/paxeer-network-addresses.json
+# ABIs source: backend/deployments/abis/
+
+## Group Identity
+- **Group:** data
+- **Path:** smart-contracts/contracts/data/
+- **Contracts:** EventEmitter, FeeAccumulator, PoolRegistry
+- **Language:** Solidity ^0.8.24 (LicenseRef-Paxlabs-HyperPax-OS-Protocol)
+- **Role:** The protocol's authoritative data layer. EventEmitter is the
+  single hub every Launchpad action emits through (off-chain indexer entry
+  point). PoolRegistry is the on-chain pool/creator/NFT directory.
+  FeeAccumulator buckets per-pool fees and routes them by NFT-strategy
+  (claim / burn / airdrop / lp-rewards / optical-surplus).
+
+---
+
+## EventEmitter
+
+- **ABI:** `backend/deployments/abis/EventEmitter.json` (impl ABI)
+       and `backend/deployments/abis/IEventEmitter.json` (interface)
+- **Address proxy:** `paxeer-network-addresses.json#EventEmitter_proxy` —
+  `0x6679aF411d534de222C32ed0AF94C3BD67090672`
+- **Address impl:** `paxeer-network-addresses.json#EventEmitter_impl` —
+  `0xC7c0071463ADA653ed1691938a91d2404D2dc694`
+- **Prev impl:** `paxeer-network-addresses.json#EventEmitter_impl_prev`
+- **Pattern:** UUPS proxy. Authorized callers = `_authorizedEmitters` mapping
+  + every pool registered in `PoolRegistry`. Inspired by GMX V2 EventEmitter.
+
+### Functions
+
+External (writes, gated by `onlyAuthorized`):
+- `emitMarketCreated(poolId, token, creator, pool, optical)`
+- `emitSwap(poolId, sender, isBuy, amountIn, amountOut, fee, price)`
+- `emitFeeRecorded(poolId, feeAmount, protocolCut, poolCut)`
+- `emitFeeDistributed(poolId, nftId, strategy, amount, recipient)`
+- `emitFeeStrategyChanged(poolId, nftId, oldStrategy, newStrategy)`
+- `emitPoolStateUpdated(poolId, virtualReserve, realReserve, tokenReserve, price)`
+- `emitOpticalExecuted(poolId, optical, hookName, data)`
+- `emitConfigUpdated(key, oldValue, newValue)`
+
+Admin (`DEFAULT_ADMIN_ROLE` / Timelock):
+- `initialize(admin)`
+- `setPoolRegistry(poolRegistry)`
+- `setAuthorizedEmitter(emitter, authorized)`
+- UUPS `_authorizeUpgrade`
+
+Views:
+- `isAuthorizedEmitter(emitter)` → `bool`
+- `poolRegistry()` → `address`
+
+### Events to index (this is THE indexer hot-path)
+
+All events carry `block.timestamp` and `block.number` as the trailing two
+fields. The indexer should treat `(blockNumber, txIndex, logIndex)` as the
+canonical ordering key and `poolId` as the primary partition key.
+
+| Event                    | Indexed args                          | Non-indexed args                                              | Purpose                                       |
+| ------------------------ | ------------------------------------- | ------------------------------------------------------------- | --------------------------------------------- |
+| `MarketCreated`          | poolId, token, creator                | pool, optical, timestamp, blockNumber                         | New pool registration                         |
+| `Swap`                   | poolId, sender, isBuy                 | amountIn, amountOut, fee, price, timestamp, blockNumber       | Every trade. Drives candles, stats, PnL.      |
+| `FeeRecorded`            | poolId                                | feeAmount, protocolCut, poolCut, timestamp, blockNumber       | Pool fee accrual                              |
+| `FeeDistributed`         | poolId, nftId, recipient              | strategy, amount, timestamp, blockNumber                      | NFT-strategy fee execution (claim/burn/etc.)  |
+| `FeeStrategyChanged`     | poolId, nftId                         | oldStrategy, newStrategy, timestamp, blockNumber              | NFT holder switched fee mode                  |
+| `PoolStateUpdated`       | poolId                                | virtualReserve, realReserve, tokenReserve, price, ts, blk     | After `syncReserves`                          |
+| `OpticalExecuted`        | poolId, optical                       | hookName (string), data (bytes), timestamp, blockNumber       | Generic optical hook invocation               |
+| `ConfigUpdated`          | key                                   | oldValue, newValue, timestamp, blockNumber                    | Protocol parameter change                     |
+
+### Reads
+- `IPoolRegistry.isRegisteredPool(msg.sender)` on every emit when the caller
+  is not in `_authorizedEmitters`. ANY pool registered via Factory is
+  auto-authorized — no manual whitelisting needed for new markets.
+
+### Writes
+- Only emits log events; no storage writes after init except admin setters
+  and UUPS upgrade slots.
+
+### Indexer notes
+- Indexer config: subscribe to logs at `EventEmitter_proxy` ONLY. All
+  protocol-level events flow through this address. Do NOT additionally
+  subscribe to per-pool addresses for Swap/PoolStateUpdated — they emit
+  their own local events but the canonical signal is through here with the
+  full `block.timestamp/number` salting.
+- `optical` field on `MarketCreated` may be `address(0)` (pool created
+  without an optical hook). Handle nulls in `indexer.pools.optical` schema.
+- `OpticalExecuted.data` is opaque bytes — decoder must dispatch on
+  `hookName` string. No standard schema across opticals.
+
+---
+
+## PoolRegistry
+
+- **ABI:** `backend/deployments/abis/PoolRegistry.json` (impl ABI)
+       and `backend/deployments/abis/IPoolRegistry.json` (interface)
+- **Address proxy:** `paxeer-network-addresses.json#PoolRegistry_proxy` —
+  `0x1F22f11325197fae71937598F6935cc4e9231970`
+- **Address impl:** `paxeer-network-addresses.json#PoolRegistry_impl` —
+  `0x779EF19C7Fd0bCA0ec1A29bEfF332197c475ba41`
+- **Pattern:** UUPS proxy. `FACTORY_ROLE` granted to `SidioraFactory_proxy`.
+
+### Functions
+
+External (writes):
+- `register(pool, token, creator, optical, nftId)` — `FACTORY_ROLE` only.
+  Reverts on duplicate token (`DuplicateToken`).
+
+Admin:
+- `initialize(eventEmitter, admin)`
+- UUPS `_authorizeUpgrade`
+
+Views:
+- `getPoolByToken(token)` → `pool`
+- `getPoolsByCreator(creator)` → `address[]`
+- `getNftIdByPool(pool)` → `uint256`
+- `getPoolMetadata(pool)` → `PoolMetadata{ creator, token, optical, nftId, createdAt, createdBlock }`
+- `getAllPools(offset, limit)` → `address[]`
+- `getPoolCount()` → `uint256`
+- `isRegisteredPool(pool)` → `bool`
+- `eventEmitter()` → `address`
+
+### Events to index
+- `PoolRegistered(pool, token, creator, optical, nftId, timestamp)` —
+  redundant with `IEventEmitter.MarketCreated` but EMITTED LOCALLY on the
+  registry contract. Indexer typically uses the EventEmitter copy; keep
+  this as a fall-back integrity check.
+
+### Reads / Writes
+- Reads: none (it IS the registry of record)
+- Writes: `_tokenToPool`, `_poolToNftId`, `_creatorToPools[creator].push(pool)`,
+  `_poolMetadata[pool]`, `_registeredPools[pool] = true`, `_allPools.push(pool)`
+
+### Indexer notes
+- `_creatorToPools` and `_allPools` arrays grow unbounded — paginate with
+  `getAllPools(offset, limit)` if back-filling, but prefer reading from the
+  EventEmitter `MarketCreated` history (faster + bounded by block range).
+- `getPoolMetadata` is the canonical "is this a real pool?" check. Off-chain
+  services (metadata, users, chat) currently query this via the indexer's
+  Postgres mirror, NOT via direct RPC.
+
+---
+
+## FeeAccumulator
+
+- **ABI:** `backend/deployments/abis/FeeAccumulator.json` (impl ABI)
+       and `backend/deployments/abis/IFeeAccumulator.json` (interface)
+- **Address proxy:** `paxeer-network-addresses.json#FeeAccumulator_proxy` —
+  `0x5C3A7A87eB2DfC965F2764E28524FE77c0003810`
+- **Address impl:** `paxeer-network-addresses.json#FeeAccumulator_impl` —
+  `0x5d951A3910105C235Dde0eD125f062195e6C295d`
+- **Prev impl:** `paxeer-network-addresses.json#FeeAccumulator_impl_prev`
+- **Pattern:** UUPS proxy + ReentrancyGuard. Multiple roles (see below).
+- **DEAD address:** `0x000000000000000000000000000000000000dEaD`
+
+### Roles
+| Role                     | Purpose                                                                                | Holders                          |
+| ------------------------ | -------------------------------------------------------------------------------------- | -------------------------------- |
+| `DEFAULT_ADMIN_ROLE`     | Setters, UUPS upgrade                                                                  | Timelock                         |
+| `POOL_ROLE`              | `recordFee`, `recordOpticalSurplus`                                                    | Every registered pool (auto-granted on `authorizePool`) |
+| `FEES_ROUTER_ROLE`       | `claim`, `burn`, `triggerAirdrop`, `sendLpRewards`                                     | `FeesRouter_proxy`               |
+| `FACTORY_ROLE`           | `authorizePool` (grants `POOL_ROLE`)                                                   | `SidioraFactory_proxy`           |
+| `OPTICAL_GRANTER_ROLE`   | `authorizeOptical` (grants `OPTICAL_CLAIM_ROLE`)                                       | `LaunchpadOpticalFactory_proxy`  |
+| `OPTICAL_CLAIM_ROLE`     | `claimOpticalSurplus`                                                                  | Each `LaunchpadOptical` (per-pool, granted on creation) |
+
+### Functions
+
+External (writes):
+- `recordFee(pool, feeAmount)` — `POOL_ROLE` only. Splits `feeAmount` into
+  protocol cut (→ Treasury via `deposit`) and pool cut (→ accumulator).
+  Calls optical `beforeFeeDistribution` hook to allow surplus diversion.
+- `claim(pool, recipient)` → `amount` — `FEES_ROUTER_ROLE` only. Drains
+  pool's accumulated USDL fees to `recipient`.
+- `burn(pool)` → `amount` — `FEES_ROUTER_ROLE` only. Sends pool's fees to
+  `DEAD_ADDRESS`.
+- `triggerAirdrop(pool)` → `totalAmount` — `FEES_ROUTER_ROLE` only. Snapshots
+  current accumulated fees as a new `epoch`. Holders pull individually via
+  `claimAirdrop`.
+- `claimAirdrop(pool, holder)` → `amount` — open call (any token holder of
+  `pool.tokenAddress` can claim their pro-rata share for the current epoch).
+  One claim per holder per epoch.
+- `sendLpRewards(pool)` → `amount` — `FEES_ROUTER_ROLE` only. Transfers
+  fees back into the pool's USDL reserve. The downstream `syncReserves` call
+  on the pool is the responsibility of `FeesRouter`.
+- `authorizePool(pool)` — `FACTORY_ROLE` only. Grants `POOL_ROLE`.
+- `recordOpticalSurplus(pool, amount)` — `POOL_ROLE` only. Manual surplus
+  attribution (rarely used; the inline path via `beforeFeeDistribution` in
+  `recordFee` is the primary surplus accrual).
+- `claimOpticalSurplus(pool, amount, recipient)` — `OPTICAL_CLAIM_ROLE`
+  only. Used by `LaunchpadOptical.claimCapital`.
+- `authorizeOptical(optical)` — `OPTICAL_GRANTER_ROLE` only. Grants
+  `OPTICAL_CLAIM_ROLE` to a freshly-deployed optical.
+
+Admin:
+- `initialize(protocolConfig, treasury, poolRegistry, eventEmitter, usdl, admin)`
+- UUPS `_authorizeUpgrade`
+
+Views:
+- `getAccumulatedFees(pool)` → `uint256`
+- `getProtocolFeesPending()` → `uint256`
+- `getAirdropBalance(pool)` → `uint256`
+- `getLpRewardsBalance(pool)` → `uint256` (note: not actually written to in
+  current impl — read with caution; verify against on-chain state)
+- `getAirdropEpoch(pool)` → `uint256`
+- `hasClaimedAirdrop(pool, holder, epoch)` → `bool`
+- `getOpticalSurplus(pool)` → `uint256`
+- Public: `protocolConfig`, `treasury`, `poolRegistry`, `eventEmitter`, `usdlAddress`
+
+### Events to index (local, NOT routed through EventEmitter)
+- `FeeRecorded(pool, feeAmount, protocolCut, poolCut)`
+- `FeesClaimed(pool, recipient, amount)` — strategy=0 (CLAIM)
+- `FeesBurned(pool, amount)` — strategy=1 (BURN)
+- `AirdropTriggered(pool, totalAmount, epoch)` — strategy=2 trigger phase
+- `AirdropClaimed(pool, holder, amount, epoch)` — per-holder claim
+- `LpRewardsSent(pool, amount)` — strategy=3
+- `OpticalSurplusRecorded(pool, amount)` — surplus accrual
+- `OpticalSurplusClaimed(pool, recipient, amount)` — team capital draw
+
+NOTE: `IEventEmitter.FeeRecorded` and `FeeDistributed` ALSO fire (from the
+pool / FeesRouter / FeeAccumulator path) — these are richer (carry
+`poolId, nftId, strategy, recipient`) and are the primary index.
+
+### Reads / Writes
+- Reads: `IProtocolConfig.protocolFeeBps`, `IPoolRegistry.getPoolMetadata` (for
+  optical address), `IOpticalFee.{getFlags, beforeFeeDistribution}`, ERC20
+  `balanceOf` and `totalSupply` for airdrop pro-rata.
+- Writes: `_accumulatedFees[pool]`, `_protocolFeesPending`, `_airdropBalance`,
+  `_airdropEpoch`, `_airdropEpochAmount`, `_airdropClaimed`, `_lpRewardsBalance`,
+  `_opticalSurplus`. USDL `safeTransfer` to recipient/treasury/dead/pool.
+  `ITreasury.deposit` (with prior `safeApprove`).
+
+### Indexer notes
+- Airdrop pro-rata is computed **at claim time** against `holderBalance /
+  totalSupply` on `IPoolRegistry.getPoolMetadata(pool).token`. This means
+  late claimers can change their share by acquiring more tokens. Indexer
+  should NOT pre-compute "expected airdrop per holder at trigger time" — it
+  is only resolvable post-claim.
+- `_lpRewardsBalance` is exposed via `getLpRewardsBalance` but the current
+  impl does NOT update it inside `sendLpRewards` (only zeros `_accumulatedFees`).
+  The view is misleading — surface this in stats as "0 unless explicitly set
+  by an upgrade". Treat `LpRewardsSent` as the source of truth.
+- Strategy semantics:
+  - `0 CLAIM`        → `claim()`
+  - `1 BURN`         → `burn()`
+  - `2 AIRDROP`      → `triggerAirdrop()` then per-holder `claimAirdrop()`
+  - `3 LP_REWARDS`   → `sendLpRewards()` + `pool.syncReserves()`
+  Each path emits both a local event AND an `IEventEmitter.FeeDistributed`
+  via `FeesRouter`.
+
+---
+
+## Cross-cutting reads / writes summary
+
+| External Contract | Read by EventEmitter | Read by PoolRegistry | Read by FeeAccumulator | Written by                                  |
+| ----------------- | --------------------- | --------------------- | ---------------------- | -------------------------------------------- |
+| `PoolRegistry`    | ✓ (auth fallback)     | —                     | ✓ (optical lookup)     | Factory                                      |
+| `ProtocolConfig`  | —                     | —                     | ✓ (`protocolFeeBps`)   | —                                            |
+| `Treasury`        | —                     | —                     | ✓ (`deposit`)          | FeeAccumulator (`recordFee` protocol cut)    |
+| `Optical`         | —                     | —                     | ✓ (`beforeFeeDistribution`) | —                                       |
+| `USDL ERC20`      | —                     | —                     | ✓ (transfer in/out)    | FeeAccumulator                               |
+| `Token ERC20`     | —                     | —                     | ✓ (balanceOf, totalSupply for airdrop) | —                                |
+
+## Coverage caveats
+- This freeze locks the on-chain SURFACE only. Roles and route allowlisting
+  are spec-bound — see `docs/architecture/pecor-sidiora-aggregator-spec.md`
+  and `commit-alpha.pax` for the canonical mainnet wiring sequence.
