@@ -158,9 +158,9 @@ func TestPortfolioRoute(t *testing.T) {
 			t.Fatalf("status = %d", rec.Code)
 		}
 		var resp struct {
-			User           string                     `json:"user"`
-			TotalValueUsdl string                     `json:"totalValueUsdl"`
-			Positions      []store.PortfolioPosition  `json:"positions"`
+			User           string                    `json:"user"`
+			TotalValueUsdl string                    `json:"totalValueUsdl"`
+			Positions      []store.PortfolioPosition `json:"positions"`
 		}
 		decode(t, rec, &resp)
 		if resp.TotalValueUsdl != "2500000" {

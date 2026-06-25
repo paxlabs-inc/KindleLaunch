@@ -135,9 +135,9 @@ func TestPublishBatchNoOpPaths(t *testing.T) {
 	srv := recorder(t, &hits, &mu, nil)
 	p := publisher.New(publisher.Options{Targets: []publisher.Target{{URL: srv.URL, Secret: secret}}})
 
-	p.PublishBatch(context.Background(), nil)             // empty events
-	p.SetBackfillMode(true)                               // suppressed
-	p.PublishBatch(context.Background(), sampleEvents())  // dropped (backfill)
+	p.PublishBatch(context.Background(), nil)            // empty events
+	p.SetBackfillMode(true)                              // suppressed
+	p.PublishBatch(context.Background(), sampleEvents()) // dropped (backfill)
 	p.WaitForInflight(time.Second)
 	mu.Lock()
 	n := len(hits)

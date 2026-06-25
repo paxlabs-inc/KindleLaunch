@@ -97,7 +97,7 @@ func whales(st *store.Store) http.HandlerFunc {
 		}
 
 		sharedhttp.WriteJSON(w, http.StatusOK, map[string]any{
-			"poolAddress":      poolAddress,
+			"poolAddress":       poolAddress,
 			"whaleThresholdPct": float64(whaleThresholdBps) / 100,
 			"whaleCount":        len(out),
 			"whales":            out,
@@ -241,7 +241,7 @@ func riskBreakdown(st *store.Store) http.HandlerFunc {
 			"riskLevel":   riskLevel,
 			"riskFactors": riskFactors,
 			"details": map[string]any{
-				"holderCount":          row.HolderCount,
+				"holderCount":           row.HolderCount,
 				"top10ConcentrationPct": humanPct(top10Bps),
 				"creatorHoldingsPct":    humanPct(creatorBps),
 				"creatorAddress":        creatorAddress,

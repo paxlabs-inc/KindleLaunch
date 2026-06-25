@@ -223,8 +223,8 @@ func TestEVMAllNodesFail(t *testing.T) {
 // works, Head() must skip it and return the fresh node's height.
 func TestEVMStaleQuarantine(t *testing.T) {
 	t.Parallel()
-	stale := jsonRPC(t, 10, nil, nil)   // far behind
-	fresh := jsonRPC(t, 100, nil, nil)  // at head
+	stale := jsonRPC(t, 10, nil, nil)  // far behind
+	fresh := jsonRPC(t, 100, nil, nil) // at head
 	s, err := NewEVM(EVMOptions{
 		RPCURLs:        []string{stale.URL, fresh.URL},
 		StaleThreshold: 50,

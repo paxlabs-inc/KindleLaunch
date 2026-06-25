@@ -30,8 +30,8 @@ func TestJSParseFloat(t *testing.T) {
 		{"+9", 9, true},
 		{"1e3", 1000, true},
 		{"1.5e-2", 0.015, true},
-		{"12.5abc", 12.5, true},   // JS parses leading numeric prefix
-		{"1e", 1, true},           // dangling exponent -> parses the "1"
+		{"12.5abc", 12.5, true}, // JS parses leading numeric prefix
+		{"1e", 1, true},         // dangling exponent -> parses the "1"
 		{"1000000000000000000", 1e18, true},
 		{"", 0, false},
 		{"abc", 0, false},
@@ -59,10 +59,10 @@ func TestParseFloatOr(t *testing.T) {
 		want     float64
 	}{
 		{"5", 1, 5},
-		{"0", 1, 1},      // zero is falsy -> fallback
-		{"abc", 1, 1},    // NaN -> fallback
-		{"", 7, 7},       // empty -> fallback
-		{"-4", 1, -4},    // negative is truthy
+		{"0", 1, 1},   // zero is falsy -> fallback
+		{"abc", 1, 1}, // NaN -> fallback
+		{"", 7, 7},    // empty -> fallback
+		{"-4", 1, -4}, // negative is truthy
 		{"2.5", 99, 2.5},
 	}
 	for _, tc := range cases {

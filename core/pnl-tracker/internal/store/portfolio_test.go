@@ -3,7 +3,6 @@ package store_test
 import (
 	"context"
 	"testing"
-
 )
 
 func TestPortfolioEnrichesAndSumsNetWorth(t *testing.T) {

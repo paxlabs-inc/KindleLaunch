@@ -228,8 +228,8 @@ func TestCreatorActivityRoute(t *testing.T) {
 	t.Run("summarises buys/sells/net and current balance", func(t *testing.T) {
 		const pool = "0xcreatoract"
 		seedInitial(t, ctx, st, pool, strptr("0xcreator"))
-		insertTx(t, ctx, st, "b-1", pool, "0xcreator", true, "0", "100", 200)  // buy 100 out
-		insertTx(t, ctx, st, "s-1", pool, "0xcreator", false, "40", "0", 100)  // sell 40 in
+		insertTx(t, ctx, st, "b-1", pool, "0xcreator", true, "0", "100", 200) // buy 100 out
+		insertTx(t, ctx, st, "s-1", pool, "0xcreator", false, "40", "0", 100) // sell 40 in
 		insertHolder(t, ctx, st, pool, "0xcreator", "60", "1")
 
 		rec := serve(t, h, http.MethodGet, "/stats/"+pool+"/creator-activity", nil, nil)

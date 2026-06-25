@@ -182,13 +182,13 @@ func TestDecodeSwapEvmosBoolQuirk(t *testing.T) {
 
 	build := func(boolWord *big.Int) ethtypes.Log {
 		var data []byte
-		data = append(data, word(boolWord)...)            // isBuy (full word)
-		data = append(data, word(big.NewInt(7))...)       // amountIn
-		data = append(data, word(big.NewInt(8))...)       // amountOut
-		data = append(data, word(big.NewInt(1))...)       // fee
-		data = append(data, word(big.NewInt(3))...)       // price
+		data = append(data, word(boolWord)...)               // isBuy (full word)
+		data = append(data, word(big.NewInt(7))...)          // amountIn
+		data = append(data, word(big.NewInt(8))...)          // amountOut
+		data = append(data, word(big.NewInt(1))...)          // fee
+		data = append(data, word(big.NewInt(3))...)          // price
 		data = append(data, word(big.NewInt(1700000000))...) // timestamp
-		data = append(data, word(big.NewInt(9))...)       // blockNumber
+		data = append(data, word(big.NewInt(9))...)          // blockNumber
 		return buildLog(t, ev, []any{poolID, common.HexToAddress(tokenAddr)}, data, 9, "0xdef", 1)
 	}
 
@@ -287,7 +287,7 @@ func TestDecodeConfigUpdated(t *testing.T) {
 
 func TestDecodeTopicsUnderflow(t *testing.T) {
 	t.Parallel()
-	ev := eventByName(t, "Swap") // needs 2 indexed topics
+	ev := eventByName(t, "Swap")                          // needs 2 indexed topics
 	log := ethtypes.Log{Topics: []common.Hash{ev.Topic0}} // only topic0
 	_, err := NewDecoder().Decode(log)
 	if err == nil || !strings.Contains(err.Error(), "topics underflow") {

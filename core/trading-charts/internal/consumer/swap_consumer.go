@@ -40,11 +40,11 @@ func New(builder *engine.Builder, redisURL string, logger *slog.Logger) (*SwapCo
 func (sc *SwapConsumer) Start(ctx context.Context) error {
 	errc, err := sc.subscriber.Subscribe(ctx, constants.ChannelSwap, func(ctx context.Context, payload []byte) error {
 		var data struct {
-			EventName      string                 `json:"eventName"`
-			BlockNumber    int64                  `json:"blockNumber"`
-			TxHash         string                 `json:"txHash"`
-			LogIndex       int                    `json:"logIndex"`
-			Args           map[string]interface{} `json:"args"`
+			EventName   string                 `json:"eventName"`
+			BlockNumber int64                  `json:"blockNumber"`
+			TxHash      string                 `json:"txHash"`
+			LogIndex    int                    `json:"logIndex"`
+			Args        map[string]interface{} `json:"args"`
 		}
 		if err := json.Unmarshal(payload, &data); err != nil {
 			sc.logger.Error("consumer: unmarshal swap", slog.String("err", err.Error()))
