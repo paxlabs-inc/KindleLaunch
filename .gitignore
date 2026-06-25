@@ -5,7 +5,12 @@
 *.prof
 bin/
 dist/
-client/
+client/packages/
+client/node_modules/
+client/docs/
+client/development/
+client/apps/
+
 knowledge/andrew_commandbook.md
 
 # Local env (never commit secrets — SECTION 17 security)
@@ -13,6 +18,7 @@ knowledge/andrew_commandbook.md
 !docker-envs/*.env.example
 .env
 .env.*
+client/Dockerfile
 
 # Editor / OS
 .DS_Store

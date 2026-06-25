@@ -1,0 +1,537 @@
+# ============================================================================
+# frontend.frozen.kvx
+# Sidiora.fun — Frontend (apps/web) Production-Readiness Remediation Spec
+# ----------------------------------------------------------------------------
+# format       = "sectioned-kvx (dense key=value, double-quoted string values)"
+# version      = "0.1.0"
+# status       = "frozen-audit (current-state grounded; remediation locked)"
+# scope        = "FRONTEND ONLY — apps/web + the 8 shared SDK packages it consumes"
+# authored     = "2026-06-21"
+# author       = "did:matrix:cursor-agent:d205e18de628e38d (pair-programmer)"
+# checklist    = "/sidiora/client/production_checklist.md (18 domains, 100k+ users)"
+# north_star   = "Survive six-figure concurrent users on a real-time financial UI"
+# program_note = "First microservice of the broader /sidiora system rebuild;"
+#                "subsequent sessions walk the remaining services one by one."
+# ============================================================================
+
+[meta.house_rules]
+RT_tag        = "[RT] items are extra-critical: real-time / financial / trading paths"
+severity      = "P0=launch-blocker, P1=must-fix-pre-launch, P2=hardening, P3=nice-to-have"
+file_anchors  = "every task cites the real file(s) it touches; paths are absolute"
+grounding     = "current-state lines below were read from source, not assumed"
+no_regression = "do NOT weaken existing tests/guards; add, don't subtract"
+
+# ============================================================================
+# SECTION 0 — STACK GROUND TRUTH (verified from source)
+# ============================================================================
+[stack]
+framework      = "Next.js 15.3.8 (App Router) + React 19 + TypeScript 5.7 strict"
+monorepo       = "pnpm@9.15 workspaces: apps/web + packages/{candles,indexer,metadata,ranking,stats,users,launchpad_v3,components,ui-tokens,fonts}-core"
+dev            = "next dev --turbopack --port 3050"
+output         = "standalone (Docker) — apps/web/next.config.ts"
+deploy         = "Railway (railway.json + Dockerfile); nginx TLS terminator fronts WS at /ws/{service}"
+styling        = "TailwindCSS v4 (@tailwindcss/postcss); fonts = Manrope .otf via raw @font-face"
+web3           = "wagmi 2 + viem 2; chain=Paxeer (id 125); cookie-storage SSR; embedded wallet (Supabase: email/google/github/X)"
+data_layer     = "@tanstack/react-query v5 (proxied via /api/sdk/*), Zustand 5 (UI state)"
+realtime       = "raw WebSocket managers (chat-ws.ts); candles WS via getServiceWsUrl('candles')"
+error_report   = "@sentry/nextjs INSTALLED but NOT WIRED + zero-dep beacon fallback"
+upstreams      = "9 Railway microservices (candles/indexer/metadata/ranking/stats/users/chat/livestream/pnl) all proxied server-side"
+
+# ============================================================================
+# SECTION 1 — RENDERING & ARCHITECTURE
+# ============================================================================
+[domain.01_rendering]
+current.layout            = "src/app/layout.tsx is async, awaits headers()/cookies() -> entire tree is request-dynamic by default"
+current.segment_files     = "ONLY root-level loading.tsx / error.tsx / not-found.tsx exist (src/app/*); no per-segment ones"
+current.segment_config    = "NO route segment config anywhere (no dynamic/revalidate/runtime/fetchCache exports)"
+current.client_boundary   = "AppProviders is 'use client' and wraps AppShell -> client tree starts very high; RSC benefit largely lost below shell"
+current.ppr               = "Partial Prerendering NOT enabled"
+current.runtime           = "no per-route runtime selection (all default Node)"
+
+T01.1.severity = "P1"
+T01.1.action   = "Add explicit route segment config per route group (dynamic/revalidate/runtime/fetchCache); classify each /app route as static|ISR|dynamic and stop accidental full-dynamic"
+T01.1.files    = "src/app/**/page.tsx, src/app/**/layout.tsx"
+
+T01.2.severity = "P1"
+T01.2.action   = "Add per-segment loading.tsx + error.tsx + not-found.tsx for token/, terminal/, swap/, profile/, live/, meta-ag/, pnl/, rewards/ so one slow/failed view never blanks the app"
+T01.2.files    = "src/app/{token,terminal,swap,profile,live,meta-ag,pnl,rewards}/**"
+
+T01.3.severity = "P2"
+T01.3.action   = "Push 'use client' down to leaves: split AppShell static chrome (RSC) from interactive islands; audit which providers truly need to wrap children"
+T01.3.files    = "src/ui/providers/app-providers.tsx, src/shell/app-shell.tsx"
+
+T01.4.severity = "P2"
+T01.4.action   = "Evaluate PPR (static shell + dynamic holes) for home/token landing once Next 15 canary stabilises; gate behind experimental flag"
+T01.4.files    = "apps/web/next.config.ts"
+
+# ============================================================================
+# SECTION 2 — PERFORMANCE & CORE WEB VITALS
+# ============================================================================
+[domain.02_performance]
+current.virtualization = "PRESENT — src/ui/common/bounded-list.tsx uses @tanstack/react-virtual (good; verify ALL long lists use it: orderbook, trades, holders, positions tables)"
+current.fonts          = "Manrope loaded via raw @font-face (.otf, opentype) in globals.css; NOT next/font; NOT subsetted; .otf is heavier than .woff2"
+current.font_tokens    = "globals.css still references --font-geist-sans / --font-geist-mono (STALE template leftover; unused)"
+current.bundle_budget  = "NO @next/bundle-analyzer, NO per-route KB budget, NO CWV budget in CI (no CI present)"
+current.images         = "next/image configured w/ remotePatterns + dangerouslyAllowSVG sandboxed (good)"
+
+T02.1.severity = "P1"
+T02.1.action   = "Migrate fonts to next/font/local with .woff2 + subsetting + zero-CLS; remove stale --font-geist-* vars; wire font CSS vars into Tailwind theme"
+T02.1.files    = "src/app/globals.css, src/app/layout.tsx, public/fonts/*"
+
+T02.2.severity = "P1"
+T02.2.action   = "Add @next/bundle-analyzer + per-route JS budget; audit heavy deps (rc-dock, embla, hls.js, framer+motion BOTH installed — dedupe to one) and dynamic-import below-fold (charts, terminal docking, video)"
+T02.2.files    = "apps/web/next.config.ts, apps/web/package.json"
+T02.2.note     = "package.json ships BOTH framer-motion@12 and motion@12 (root) — pick one to cut bundle"
+
+T02.3.severity = "P1 [RT]"
+T02.3.action   = "Audit every high-frequency list (terminal Table, ticker, trades, top-holders) confirms virtualization; batch WS-driven re-renders via requestAnimationFrame, never setState-per-tick"
+T02.3.files    = "src/widgets/terminal/**, src/widgets/trading/**, src/shell/platform-metrics.tsx"
+
+T02.4.severity = "P2 [RT]"
+T02.4.action   = "Move CBOR/JSON decode + aggregation off main thread (Web Worker) for candle/orderbook hot paths"
+T02.4.files    = "src/widgets/trading/udf-datafeed.ts, src/core/clients/candle-stats.ts"
+
+T02.5.severity = "P2"
+T02.5.action   = "Enforce CWV budgets (LCP<2.5s, INP<200ms, CLS<0.1, TTFB<800ms) in CI; fail build on regression"
+T02.5.files    = "(new) .github/workflows/ci.yml"
+
+# ============================================================================
+# SECTION 3 — CACHING & DATA FETCHING
+# ============================================================================
+[domain.03_caching]
+current.proxy        = "GOOD — src/app/api/sdk/[service]/[...path]/route.ts sets per-service Cache-Control s-maxage + stale-while-revalidate; hides upstream URLs"
+current.bff          = "src/app/api/bff/token/[pool]/route.ts s-maxage=5 swr=10 (good for token page)"
+current.rq_defaults  = "query-provider.tsx: staleTime 10s, retry 1, refetchOnWindowFocus+Reconnect true"
+current.shared_cache = "NONE — no Redis/Upstash; each Next instance caches independently"
+BUG.users_cache      = "CRITICAL: SDK proxy CACHE_TTL.users=3600 but the inline comment says 'no-store — personal profile data, must not be stale' — personal data is being cached publicly for 1h (privacy + staleness)"
+BUG.realtime_cache   = "chat/livestream TTL=3600 commented 'no cache — realtime' but value caches 1h; pnl TTL=1 commented '30s'; comments contradict values throughout"
+
+T03.1.severity = "DONE"
+T03.1.action   = "[DONE 2026-06-21] Fixed SDK-proxy CACHE_TTL: users/chat/livestream/pnl set to 0 (no-store); ranking comment 1min->30s reconciled; SWR pruned to cacheable services; added AUTH_HEADERS check so any authed/personalized request is forced no-store (never shared-cached). route.ts:29-58,73-77,100-118"
+T03.1.files    = "src/app/api/sdk/[service]/[...path]/route.ts:29-48"
+
+T03.2.severity = "P1 [RT]"
+T03.2.action   = "Define explicit stale-data tolerance per data type (prices/balances = never stale; metadata = long); document policy; ensure Cache-Control Vary/auth-aware so authed responses are not shared-cached"
+T03.2.files    = "src/app/api/sdk/[service]/[...path]/route.ts, src/core/query-keys.ts"
+
+T03.3.severity = "P2"
+T03.3.action   = "Add shared server cache (Upstash/Redis) for cross-instance ISR coordination + rate-limit counters; avoid thundering-herd revalidation at scale"
+T03.3.files    = "(new) src/core/cache/redis.ts"
+
+T03.4.severity = "P2"
+T03.4.action   = "Wire revalidateTag/revalidatePath to mutations (token create, profile edit); document tags"
+T03.4.files    = "src/widgets/create/create-wizard.tsx, src/app/api/**"
+
+# ============================================================================
+# SECTION 4 — STATE MANAGEMENT
+# ============================================================================
+[domain.04_state]
+current.split        = "Server state = TanStack Query; UI state = Zustand; wallet = wagmi cookie-storage (good separation)"
+current.url_state    = "PARTIAL — verify selected market/tab/filters live in URL for shareable/restorable state"
+current.optimistic   = "src/hooks/tx/use-optimistic-receipt.ts exists (good start)"
+current.hydration    = "layout reads cookies server-side -> wagmi cookieToInitialState (correct SSR-safe pattern)"
+
+T04.1.severity = "P1 [RT]"
+T04.1.action   = "Harden optimistic updates with explicit rollback on failure for order placement/cancel/swap; surface rollback in toasts"
+T04.1.files    = "src/hooks/tx/use-optimistic-receipt.ts, src/widgets/meta-ag/order-form.tsx, src/widgets/swap/swap-panel.tsx"
+
+T04.2.severity = "P2"
+T04.2.action   = "Move shareable state (selected token, terminal tab, filters) to URL searchParams as source of truth"
+T04.2.files    = "src/page-modules/**, src/widgets/terminal/**"
+
+T04.3.severity = "P2"
+T04.3.action   = "Audit Zustand store scoping — ensure no app-wide store causes global re-renders on hot ticks"
+T04.3.files    = "src/**/*store*.ts"
+
+# ============================================================================
+# SECTION 5 — REAL-TIME / WEBSOCKET LAYER  [RT]
+# ============================================================================
+[domain.05_realtime]
+current.chat_ws        = "STRONG baseline — src/core/clients/chat-ws.ts: single multiplexed conn, consumer map, exp-backoff+jitter (cap 30s), ping 25s, circuit breaker (15 attempts), resubscribe-on-reconnect, clean 4001/4003 no-retry"
+current.candles_ws     = "WEAK — candles-core SDK is HTTP-only (generated); no dedicated candle WS manager mirroring chat-ws; realtime candles likely polled"
+GAP.heartbeat_deadconn = "ping is fire-and-forget; no pong-timeout -> dead-connection detection (server silently gone is not noticed until TCP close)"
+GAP.sequence_gap       = "NO sequence/gap detection -> missed messages on orderbook/trades go undetected (CRITICAL for financial correctness)"
+GAP.snapshot_delta     = "NO snapshot+delta resync model on reconnect (orderbook can drift)"
+GAP.backpressure       = "NO coalescing/drop of stale ticks; high-volume bursts can flood main thread"
+GAP.visibility         = "NO Page Visibility throttle/pause when tab hidden"
+GAP.sse_fallback       = "NO SSE fallback where corporate proxies block WS"
+GAP.precision          = "FLOAT money math — see domain 02/15; prices/balances pass through Number()"
+
+T05.1.severity = "P0 [RT]"
+T05.1.action   = "Build a shared WS connection-manager abstraction (generalise chat-ws.ts) with: pong-timeout dead-conn detection, monotonic sequence numbers + gap detection, snapshot+delta resync on reconnect, bounded queue with stale-tick coalescing (backpressure)"
+T05.1.files    = "(new) src/core/realtime/ws-manager.ts (refactor chat-ws.ts onto it)"
+
+T05.2.severity = "P0 [RT]"
+T05.2.action   = "Implement candle/market WS consumer on the new manager (initial REST snapshot then incremental diffs); replace any polling on the trading terminal"
+T05.2.files    = "src/widgets/trading/udf-datafeed.ts, src/core/clients/candle-stats.ts, src/core/sdk-config.ts:62-69"
+
+T05.3.severity = "P1 [RT]"
+T05.3.action   = "Add Page Visibility awareness: pause/throttle non-critical streams when document.hidden; full resync on re-show"
+T05.3.files    = "src/core/realtime/ws-manager.ts"
+
+T05.4.severity = "P2 [RT]"
+T05.4.action   = "Add SSE fallback transport for environments where WS is blocked"
+T05.4.files    = "src/core/realtime/ws-manager.ts"
+
+# ============================================================================
+# SECTION 6 — SECURITY
+# ============================================================================
+[domain.06_security]
+current.csp          = "GOOD design — CSP set at RUNTIME via src/middleware.ts (reads wallet-iframe origin fresh, builds connect-src from env); charting_library gets scoped permissive CSP"
+WEAK.csp_inline      = "script-src includes 'unsafe-inline' (and style-src 'unsafe-inline') -> XSS surface; no nonce/hash strategy"
+GAP.hsts             = "NO Strict-Transport-Security header"
+GAP.nosniff          = "NO X-Content-Type-Options: nosniff"
+GAP.referrer         = "NO Referrer-Policy header"
+current.permissions  = "Permissions-Policy set (clipboard only)"
+current.xfo          = "X-Frame-Options SAMEORIGIN only when no wallet origin (correct deference to frame-ancestors)"
+GAP.sri              = "NO Subresource Integrity for external/charting scripts"
+current.secrets      = "only NEXT_PUBLIC_* exposed; upstream URLs hidden behind proxy (good); /sidiora/.env exists at repo root — verify gitignored, never in client bundle"
+GAP.edge_ratelimit   = "frontend has NO edge rate-limiting (relies on each upstream service)"
+
+T06.1.severity = "DONE"
+T06.1.action   = "[DONE 2026-06-21] middleware.ts now sets HSTS (max-age=15552000; includeSubDomains; preload), X-Content-Type-Options: nosniff, Referrer-Policy: strict-origin-when-cross-origin on EVERY route (set before the charting_library early-return so that branch is covered too). middleware.ts:98-106"
+T06.1.files    = "src/middleware.ts:117"
+
+T06.2.severity = "P1"
+T06.2.action   = "Move to nonce-based CSP: generate per-request nonce in middleware, drop 'unsafe-inline' from script-src (keep 'wasm-unsafe-eval' only where the embedded-wallet WASM needs it); thread nonce into next/script + inline styles"
+T06.2.files    = "src/middleware.ts:75-92, src/app/layout.tsx"
+T06.2.note     = "prior CSP/WASM battles noted in checklist — budget time; verify wallet iframe + charting_library still load"
+
+T06.3.severity = "P1"
+T06.3.action   = "Add edge rate-limiting (per-IP / per-token) in middleware or via shared Redis counters for /api/* and auth endpoints; add WAF/DDoS at the CDN/nginx layer"
+T06.3.files    = "src/middleware.ts, (new) src/core/cache/redis.ts"
+
+T06.4.severity = "P1 [RT]"
+T06.4.action   = "Wallet/signing safety review: clear human-readable signing prompts (what is being signed), nonce/replay protection on chat-auth signatures, SIWE-style domain binding; verify keys never leave wallet"
+T06.4.files    = "src/core/clients/chat-auth.ts, src/core/wallet-sdk/**, src/shell/wallet-connect-modal.tsx"
+
+T06.5.severity = "P2"
+T06.5.action   = "Add dependency scanning (npm audit + Dependabot/Renovate) in CI; add SRI for any external script"
+T06.5.files    = "(new) .github/workflows/ci.yml, (new) renovate.json"
+
+# ============================================================================
+# SECTION 7 — AUTHENTICATION & AUTHORIZATION
+# ============================================================================
+[domain.07_auth]
+current.wallet_auth = "wagmi connectors: Paxeer embedded (Supabase OAuth), injected, WalletConnect (gated on project id), Coinbase"
+current.chat_auth   = "wallet-signature auth (src/core/clients/chat-auth.ts) -> nonce/expiresAt passed to WS"
+current.supabase    = "embedded wallet backed by Supabase auth/realtime"
+GAP.session_review  = "verify Supabase session cookies are httpOnly/Secure/SameSite; verify token refresh is single-flight + race-safe; verify logout invalidates server session not just client"
+GAP.authz           = "no evidence of server-side route protection (middleware matcher is CSP-only, not auth)"
+
+T07.1.severity = "P1"
+T07.1.action   = "Audit + harden Supabase session: httpOnly/Secure/SameSite cookies, short-lived access + rotating refresh, single-flight refresh to avoid races"
+T07.1.files    = "src/core/wallet-sdk/**, src/core/clients/chat-auth.ts"
+
+T07.2.severity = "P1"
+T07.2.action   = "Enforce authorization server-side for any protected route/action (middleware auth check + per-request validation); never rely on hiding UI"
+T07.2.files    = "src/middleware.ts, src/app/api/**"
+
+T07.3.severity = "P2"
+T07.3.action   = "Confirm signature nonce expiry replay-protection on chat-auth message; bind domain into signed message"
+T07.3.files    = "src/core/clients/chat-auth.ts"
+
+# ============================================================================
+# SECTION 8 — ERROR HANDLING & RESILIENCE
+# ============================================================================
+[domain.08_errors]
+current.route_error = "root src/app/error.tsx (reassuring copy, digest shown) + not-found.tsx"
+current.reporter    = "src/core/report-error.ts: Sentry-if-DSN else sendBeacon('/api/errors') else console"
+BUG.beacon_404      = "sendBeacon targets /api/errors but NO such route exists (only sdk/bff/og route.ts) -> all beacon errors 404 silently lost"
+GAP.granular_bounds = "only route-level error boundaries; no per-widget boundary (one failing chart/orderbook blanks the segment)"
+GAP.degradation     = "no explicit graceful-degradation when a single upstream (e.g. ranking) is down"
+GAP.circuit_breaker = "RQ retry=1 only; no circuit breaker for repeatedly-failing upstream"
+
+T08.1.severity = "DONE"
+T08.1.action   = "[DONE 2026-06-21] Created src/app/api/errors/route.ts (POST): validates beacon {message,stack,context,url,timestamp}, 64KB cap, reconstructs a stack-bearing Error, Sentry.captureException(tag source=client-beacon) + server console.error, returns 204; never throws back at the beacon."
+T08.1.files    = "(new) src/app/api/errors/route.ts, src/core/report-error.ts:44-57"
+
+T08.2.severity = "P1"
+T08.2.action   = "Add granular React error boundaries around independent widgets (chart, orderbook, chat, holders) so one failure degrades locally, not the whole page"
+T08.2.files    = "(new) src/ui/common/error-boundary.tsx, src/widgets/**"
+
+T08.3.severity = "P2"
+T08.3.action   = "Add retry-with-backoff + circuit breaker per upstream in the data layer; design fallback UI (not infinite spinners) for failed data"
+T08.3.files    = "src/core/clients/**, src/ui/providers/query-provider.tsx"
+
+T08.4.severity = "P2"
+T08.4.action   = "Offline/network-loss UX: banner + queued-where-safe actions"
+T08.4.files    = "src/shell/app-shell.tsx"
+
+# ============================================================================
+# SECTION 9 — OBSERVABILITY & MONITORING
+# ============================================================================
+[domain.09_observability]
+current.sentry_dep  = "@sentry/nextjs@10 in dependencies BUT NOT WIRED: no sentry.client/server/edge config, no instrumentation.ts, no withSentryConfig in next.config -> no source maps, no release/session tracking; only a lazy captureException if NEXT_PUBLIC_SENTRY_DSN is set"
+current.analytics   = "src/core/analytics.ts is a NO-OP stub (PostHog/Mixpanel commented out)"
+GAP.rum             = "NO Real User Monitoring; NO reportWebVitals wired"
+GAP.tracing         = "NO request/trace IDs propagated edge->upstream; no structured frontend logging"
+GAP.alerting        = "NO frontend alerting (error rate, WS disconnect rate, latency p95/p99)"
+note.backend_obs    = "backend already runs Prometheus/Grafana — surface frontend metrics there"
+
+T09.1.severity = "DONE"
+T09.1.action   = "[DONE 2026-06-21] Wired Sentry: instrumentation.ts (register server/edge + onRequestError), instrumentation-client.ts (Next 15.3-native, Turbopack-safe client init + onRouterTransitionStart), sentry.server/edge.config.ts; next.config.ts wrapped with withSentryConfig (tunnelRoute /monitoring, widenClientFileUpload, source-map upload gated on SENTRY_AUTH_TOKEN). All init gated on NEXT_PUBLIC_SENTRY_DSN -> no-op when unset. NOTE: client init lives in instrumentation-client.ts (not sentry.client.config.ts) because the dev server runs Turbopack, where the legacy file is not loaded."
+T09.1.files    = "(new) apps/web/instrumentation.ts, (new) apps/web/sentry.*.config.ts, apps/web/next.config.ts"
+
+T09.2.severity = "P1"
+T09.2.action   = "Wire reportWebVitals -> analytics/Sentry for field CWV (RUM); implement real analytics provider behind the analytics.ts stub (PostHog/Plausible, privacy-respecting)"
+T09.2.files    = "apps/web/instrumentation.ts, src/core/analytics.ts"
+
+T09.3.severity = "P1 [RT]"
+T09.3.action   = "Emit frontend metrics (error rate, WS disconnect/reconnect rate, latency) and route to the existing Grafana; add alerting thresholds + synthetic checks on login / place-order / load-market"
+T09.3.files    = "src/core/realtime/ws-manager.ts, src/core/analytics.ts"
+
+T09.4.severity = "P2"
+T09.4.action   = "Propagate x-request-id/trace id from middleware through the SDK proxy to upstreams for distributed tracing"
+T09.4.files    = "src/middleware.ts, src/app/api/sdk/[service]/[...path]/route.ts:71"
+
+# ============================================================================
+# SECTION 10 — TESTING
+# ============================================================================
+[domain.10_testing]
+current = "ZERO app-level tests. No vitest/jest/playwright in apps/web. (candles-core has a generated jest.config.ts only.)"
+
+T10.1.severity = "DONE"
+T10.1.action   = "[DONE 2026-06-21] Added Vitest (devDep vitest@^3.2.4 + vitest.config.ts + test/test:watch scripts) and src/utils/format.test.ts: 17 behavior-pinning tests over the REAL fromWad/from6dec/formatPrice/formatCurrency/formatNumber/formatPercent (incl. sub-cent subscript-digit path). `vitest run` = 17/17 green. Pins current float semantics as the safety net BEFORE the Phase-1 BigInt/decimal refactor. NOTE: use-trade-panel.test.ts deferred to Phase 1 (lands with the precision rework)."
+T10.1.files    = "(new) src/utils/format.test.ts, src/widgets/trading/use-trade-panel.test.ts"
+
+T10.2.severity = "P1"
+T10.2.action   = "Add Playwright E2E for critical paths: connect wallet, place/cancel order, swap, token create, load market"
+T10.2.files    = "(new) apps/web/e2e/**, (new) playwright.config.ts"
+
+T10.3.severity = "P2"
+T10.3.action   = "Add component tests (Testing Library), axe a11y tests in CI, k6/Artillery load test against SSR + WS fan-out, contract tests vs the 9 upstream SDKs"
+T10.3.files    = "(new) apps/web/tests/**, (new) load/**"
+
+T10.4.severity = "P2"
+T10.4.action   = "Add coverage gates on critical packages (format/precision/realtime)"
+T10.4.files    = "(new) vitest.config.ts"
+
+# ============================================================================
+# SECTION 11 — CI/CD & DEPLOYMENT
+# ============================================================================
+[domain.11_cicd]
+current.deploy   = "Railway (railway.json) + multi-stage Dockerfile (standalone) + entrypoint.sh"
+GAP.ci           = ".github/ present but NO workflow detected; no lint/typecheck/test/bundle gate on PRs"
+BUG.typecheck    = "apps/web/tsc.log shows a LIVE type error: useQuery returns Record<string,TokenMetadata|null> assigned to Record<string,TokenMetadata> — typecheck currently FAILS"
+GAP.preview      = "no per-PR preview deployments documented"
+GAP.flags        = "no feature-flag system (deploy != release coupling)"
+GAP.envsep       = "verify dev/staging/prod env separation + isolated data"
+
+T11.1.severity = "DONE"
+T11.1.action   = "[DONE 2026-06-21] Live `tsc --noEmit` is CLEAN (exit 0); tsc.log was a stale snapshot. token-grid.tsx:46 already uses the nullable generic Record<string,TokenMetadata|null>. No change needed; verified green."
+T11.1.files    = "src/core/clients/metadata.ts (and the consuming useQuery)"
+
+T11.2.severity = "P0"
+T11.2.action   = "Add CI pipeline: lint + tsc --noEmit + test + build + bundle-size check on every PR; block merge on failure"
+T11.2.files    = "(new) .github/workflows/ci.yml"
+
+T11.3.severity = "P1"
+T11.3.action   = "Add per-PR preview deploys; verify dev/staging/prod env isolation; document promotion + rollback (Railway)"
+T11.3.files    = "railway.json, (new) docs/deploy-runbook.md"
+
+T11.4.severity = "P2"
+T11.4.action   = "Add feature flags (self-hosted/Unleash) to decouple deploy from release; ensure source maps upload privately (not served)"
+T11.4.files    = "(new) src/core/flags.ts, apps/web/next.config.ts"
+
+# ============================================================================
+# SECTION 12 — INFRASTRUCTURE & SCALING
+# ============================================================================
+[domain.12_infra]
+current.standalone  = "output:standalone -> Node server in Docker behind nginx; WS proxied at /ws/{service} (good: app does NOT hold long-lived sockets in a serverless fn)"
+current.compress    = "compress:true in next.config + brotli/gzip expected at nginx"
+GAP.cdn             = "verify a CDN with global PoPs fronts static/_next assets"
+GAP.autoscale       = "verify Railway autoscaling + cold-start posture for SSR"
+GAP.ws_fanout       = "WS fan-out scaling is upstream's job (Go services) — frontend must tolerate fan-out gateway restarts (ties to domain 05 resync)"
+GAP.cost_monitor    = "no monitoring of SSR invocation / bandwidth / image-opt cost at scale"
+
+T12.1.severity = "P1"
+T12.1.action   = "Confirm/Configure CDN in front of _next/static + immutable assets; verify Cache-Control immutability on hashed assets"
+T12.1.files    = "Dockerfile, nginx config (deploy), apps/web/next.config.ts"
+
+T12.2.severity = "P2"
+T12.2.action   = "Document SSR autoscaling + cold-start mitigation; add cost monitoring (SSR invocations, bandwidth, image opt, egress)"
+T12.2.files    = "(new) docs/deploy-runbook.md"
+
+T12.3.severity = "P2 [RT]"
+T12.3.action   = "Verify frontend gracefully survives WS-gateway restart/failover (reconnect + resync from domain 05)"
+T12.3.files    = "src/core/realtime/ws-manager.ts"
+
+# ============================================================================
+# SECTION 13 — INTERNATIONALIZATION & LOCALIZATION
+# ============================================================================
+[domain.13_i18n]
+current = "NONE. No next-intl / no locale routing / no Intl wrapping. Checklist assumed ES/ZH-CN/JA/DE shipped — they are NOT present in the frontend. All strings are hardcoded English."
+
+T13.1.severity = "P1 [RT]"
+T13.1.action   = "Adopt Intl-based locale-aware number/currency/date formatting in format.ts (critical for prices) even before full i18n"
+T13.1.files    = "src/utils/format.ts"
+
+T13.2.severity = "P2"
+T13.2.action   = "Introduce next-intl with locale in URL/cookie; extract all hardcoded strings; CI check for untranslated keys; add ES/ZH-CN/JA/DE catalogs"
+T13.2.files    = "(new) src/i18n/**, src/app/[locale]/** (restructure), apps/web/next.config.ts"
+
+T13.3.severity = "P3"
+T13.3.action   = "RTL support if Arabic/Hebrew added later"
+T13.3.files    = "src/app/globals.css"
+
+# ============================================================================
+# SECTION 14 — ACCESSIBILITY (a11y)
+# ============================================================================
+[domain.14_a11y]
+current.eslint = "eslint.config.mjs DISABLES jsx-a11y/role-supports-aria-props + react/no-unescaped-entities + several react-hooks rules (purity, preserve-manual-memoization) -> a11y + React-19-compiler safety relaxed"
+GAP.axe        = "no axe in CI; no screen-reader pass"
+GAP.live       = "no aria-live regions for realtime price/status updates [RT]"
+GAP.contrast   = "verify color tokens (green #44E8C8 on black) meet WCAG AA"
+
+T14.1.severity = "P1 [RT]"
+T14.1.action   = "Add aria-live polite regions for price/PNL/status updates; ensure custom widgets (terminal, orderbook, modals) are keyboard-navigable with focus management + trapping"
+T14.1.files    = "src/widgets/trading/**, src/widgets/terminal/**, src/shell/wallet-connect-modal.tsx"
+
+T14.2.severity = "P2"
+T14.2.action   = "Re-enable jsx-a11y rules incrementally, fix violations; add axe to CI; verify AA contrast on token palette; respect prefers-reduced-motion (mind framer-motion defaults)"
+T14.2.files    = "apps/web/eslint.config.mjs, src/app/globals.css, src/new-components/MicroInteractions.tsx"
+
+# ============================================================================
+# SECTION 15 — CODE QUALITY & DX
+# ============================================================================
+[domain.15_quality]
+current.ts        = "strict:true (good) but NO noUncheckedIndexedAccess; allowJs:true"
+current.eslint    = "no-explicit-any OFF, no-unused-vars warn-only, react-hooks purity/memoization OFF — masks real bugs in a money UI"
+GAP.precommit     = "no Husky/lint-staged in apps/web (user's global pre-commit hook runs eslint --fix + prettier — keep compatible)"
+GAP.storybook     = "none"
+current.monorepo  = "Turborepo present at /sidiora root (turbo.json)"
+README.stale      = "apps/web/README.md is a SOLANA 'Azal' template (wrong project entirely) — misleads contributors"
+
+T15.1.severity = "P1"
+T15.1.action   = "Enable noUncheckedIndexedAccess; re-enable @typescript-eslint/no-explicit-any (or scope it) and the react-hooks rules, fixing fallout — these guard the hot trading paths"
+T15.1.files    = "apps/web/tsconfig.json, apps/web/eslint.config.mjs"
+
+T15.2.severity = "P2"
+T15.2.action   = "Rewrite apps/web/README.md for Sidiora (architecture, env vars, run/build, the 9 upstreams); keep an ADR log (this .kvx is the first)"
+T15.2.files    = "apps/web/README.md"
+
+T15.3.severity = "P2"
+T15.3.action   = "Add Storybook for the design system (packages/components, ui-tokens); wire Turborepo task caching for lint/test/build"
+T15.3.files    = "(new) apps/web/.storybook/**, /sidiora/turbo.json"
+
+# ============================================================================
+# SECTION 16 — UX, PWA & MOBILE
+# ============================================================================
+[domain.16_ux_pwa]
+current.manifest    = "public/manifest.json EXISTS"
+brand.locked        = "CANONICAL Sidiora accent = green #44E8C8; background = #000000 (confirmed by user 2026-06-21). Paxeer Blue #004CED is NOT a Sidiora color."
+RESOLVED.theme       = "manifest.json drift FIXED 2026-06-21: theme_color #004CED->#44E8C8, background_color #050505->#000000 to match layout.tsx + globals.css"
+current.skeletons   = "shimmer skeletons + loading.tsx present"
+current.toasts      = "sonner ToastProvider in layout (good for fills/errors)"
+current.mobile      = "mobile-bottom-nav.tsx + responsive bento grid + breakpoints -> real mobile layout exists"
+GAP.sw_offline      = "manifest present but NO service worker -> not truly installable/offline; mind cache-invalidation-on-deploy if added"
+
+T16.1.severity = "DONE"
+T16.1.action   = "RESOLVED: brand color locked to Sidiora green #44E8C8 / bg #000000; manifest.json corrected. Remaining: remove stale --font-geist-* tokens (covered by T02.1)."
+T16.1.files    = "public/manifest.json (fixed), src/app/layout.tsx, src/app/globals.css"
+
+T16.2.severity = "P2"
+T16.2.action   = "Add a service worker (offline shell + asset precache) with deploy-safe cache invalidation; verify installable PWA"
+T16.2.files    = "(new) apps/web/public/sw.js or next-pwa integration"
+
+T16.3.severity = "P2 [RT]"
+T16.3.action   = "Verify every data view has designed empty/error/loading states; dense mobile layouts for trading tables (not shrunk desktop)"
+T16.3.files    = "src/widgets/terminal/**, src/widgets/profile/positions-tab.tsx"
+
+# ============================================================================
+# SECTION 17 — COMPLIANCE & LEGAL
+# ============================================================================
+[domain.17_compliance]
+current.legal      = "GOOD baseline — src/app/docs/{privacy,terms,dmca,do-not-sell,trademark-guidelines}; Sidiora_Terms_of_Use.docx at repo root"
+current.cookie     = "CookieBanner + PlatformRulesModal mounted in layout.tsx"
+GAP.consent_mgmt   = "verify cookie consent actually gates analytics/non-essential cookies (GDPR/CCPA preference management), not just a banner"
+GAP.audit_log      = "no client audit logging for sensitive actions where required"
+GAP.geo            = "no geo-restriction/disclaimer gating for regulated jurisdictions [RT]"
+
+T17.1.severity = "P1 [RT]"
+T17.1.action   = "Wire cookie consent to actually gate analytics/non-essential storage; add geo-restriction/disclaimer gating if regulated jurisdictions apply; keep frontend ToU in sync with the .docx source"
+T17.1.files    = "src/ui/shared/cookie-banner.tsx, src/core/analytics.ts, src/app/docs/terms/**"
+
+T17.2.severity = "P2"
+T17.2.action   = "Add audit logging for sensitive user actions; define data retention/deletion if PII stored"
+T17.2.files    = "src/core/analytics.ts"
+
+# ============================================================================
+# SECTION 18 — PRE-LAUNCH HARDENING
+# ============================================================================
+[domain.18_prelaunch]
+GAP = "none of: load test @2-3x peak (incl WS fan-out), chaos/failure drills, incident runbook, validated on-call/alerting, multi-geo Lighthouse/WebPageTest, pentest, production rollback test"
+
+T18.1.severity = "P1 [RT]"
+T18.1.action   = "Load test at 2-3x expected peak including WS fan-out; chaos drills (kill region, drop WS gateway, throttle API) and verify graceful behavior (validates domains 05/08/12)"
+T18.1.files    = "(new) load/**, docs/chaos-drills.md"
+
+T18.2.severity = "P1"
+T18.2.action   = "Write incident runbook (deploy rollback, cache purge, WS storm); validate on-call + alerting end-to-end (alert actually pages); test rollback in production"
+T18.2.files    = "(new) docs/runbook.md"
+
+T18.3.severity = "P2"
+T18.3.action   = "Multi-geo Lighthouse + WebPageTest on real devices; security review / pentest before public launch"
+T18.3.files    = "(new) .github/workflows/lighthouse.yml"
+
+# ============================================================================
+# SECTION 19 — PRIORITIZED EXECUTION ORDER (what bites hardest at 100k+)
+# ============================================================================
+[execution.sequence]
+note = "Checklist's own guidance: WS resilience+backpressure, virtualization+main-thread budget, caching/stale policy, bundle size, observability, then WS load test."
+
+phase_0_correctness_and_safety = [
+  "T03.1 fix shared-cache of personal/realtime data (PRIVACY P0)",
+  "T11.1 fix the live TokenMetadata typecheck error (build is red)",
+  "T08.1 create /api/errors (telemetry silently lost today)",
+  "T09.1 wire Sentry properly (blind in prod otherwise)",
+  "T06.1 add HSTS/nosniff/Referrer-Policy headers",
+  "T10.1 unit-test the precision/money formatters",
+]
+phase_1_realtime_backbone = [
+  "T05.1 shared WS manager (dead-conn + sequence/gap + snapshot/delta + backpressure)",
+  "T05.2 candle/market WS on the new manager",
+  "T02.3 batch WS re-renders via rAF; confirm full virtualization",
+  "domain-15 precision: replace float money math with BigInt/decimal end-to-end",
+]
+phase_2_perf_and_caching = [
+  "T02.1 next/font + woff2 subsetting",
+  "T02.2 bundle analyzer + budgets + dedupe framer/motion",
+  "T03.2 explicit stale-data tolerance + auth-aware caching",
+]
+phase_3_resilience_and_observability = [
+  "T08.2 granular error boundaries",
+  "T09.2 RUM + reportWebVitals + real analytics",
+  "T09.3 frontend metrics -> Grafana + alerting",
+]
+phase_4_quality_gates = [
+  "T11.2 CI pipeline (lint/tsc/test/build/bundle)",
+  "T10.2 Playwright critical-path E2E",
+  "T15.1 tsconfig/eslint strictness restored",
+]
+phase_5_polish_and_launch = [
+  "T01.1/T01.2 segment config + per-segment loading/error",
+  "T16.1 brand-color reconciliation, T16.2 service worker",
+  "T13 i18n, T14 a11y, T17 compliance gating",
+  "T18 load test + chaos + runbook + pentest",
+]
+
+# ============================================================================
+# SECTION 20 — TOP CRITICAL DEFECTS (grounded, not theoretical)
+# ============================================================================
+[critical_defects]
+D1 = "PRIVACY: SDK proxy caches `users` (personal) data with public s-maxage=3600 despite a comment saying no-store — src/app/api/sdk/[service]/[...path]/route.ts:32"
+D2 = "MONEY PRECISION: fromWad/from6dec convert 18-dec wei to JS float via Number() — src/utils/format.ts:42-58; 550 float-math matches across swap/trade widgets"
+D3 = "TELEMETRY LOST: report-error beacons to /api/errors which does not exist (404) — src/core/report-error.ts:55"
+D4 = "PROD BLIND: @sentry/nextjs installed but never configured (no instrumentation/config/withSentryConfig)"
+D5 = "BUILD RED: live tsc error (TokenMetadata|null) recorded in apps/web/tsc.log"
+D6 = "WS GAPS: no sequence/gap detection or snapshot+delta resync — orderbook/trades can silently drift — src/core/clients/chat-ws.ts"
+D7 = "HEADERS: missing HSTS / X-Content-Type-Options / Referrer-Policy — src/middleware.ts"
+D8 = "STALE README: apps/web/README.md describes a Solana 'Azal' project, not Sidiora"
+D9 = "[RESOLVED 2026-06-21] BRAND DRIFT: manifest theme_color was #004CED, fixed to canonical Sidiora green #44E8C8 (bg #000000) to match layout/globals"
+D10 = "ZERO TESTS in apps/web; eslint/tsc strictness relaxed (any allowed, react-hooks purity off)"
+
+# ============================================================================
+# END frontend.frozen.kvx
+# ============================================================================

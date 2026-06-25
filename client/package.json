@@ -1,0 +1,28 @@
+{
+  "name": "sidiora",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter @sidiora/web dev",
+    "dev:bot": "pnpm --filter @sidiora/telegram-bot dev",
+    "build": "pnpm --filter @sidiora/web build",
+    "build:bot": "pnpm --filter @sidiora/telegram-bot build",
+    "build:packages": "pnpm -r --filter './packages/*' build",
+    "lint": "pnpm --filter @sidiora/web lint"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "devDependencies": {
+    "tsup": "^8.3.5"
+  },
+  "pnpm": {
+    "overrides": {
+      "react": "^19.0.0",
+      "react-dom": "^19.0.0",
+      "wagmi": "^2.19.0",
+      "@tanstack/react-query": "^5.62.0"
+    }
+  },
+  "dependencies": {
+    "@tanstack/react-virtual": "^3.13.24",
+    "motion": "^12.38.0"
+  }
+}
