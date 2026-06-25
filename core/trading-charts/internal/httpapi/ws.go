@@ -170,42 +170,52 @@ func (h *wsHub) broadcastCandleUpdate(payload string) {
 		return
 	}
 
-	o, _ := util.FormatPrice(event.Open)
-	hh, _ := util.FormatPrice(event.High)
-	l, _ := util.FormatPrice(event.Low)
-	c, _ := util.FormatPrice(event.Close)
-	vu, _ := util.FormatVolume(event.VolumeUsdl)
-	vt, _ := util.FormatVolume(event.VolumeToken)
-	bv, _ := util.FormatVolume(event.BuyVolumeUsdl)
-	sv, _ := util.FormatVolume(event.SellVolumeUsdl)
-	mo, _ := util.FormatVolume(event.McapOpen)
-	mh, _ := util.FormatVolume(event.McapHigh)
-	ml, _ := util.FormatVolume(event.McapLow)
-	mc, _ := util.FormatVolume(event.McapClose)
+	var ferr error
+	fp := func(s string) float64 {
+		v, e := util.FormatPrice(s)
+		if e != nil {
+			ferr = e
+		}
+		return parseFloat(v)
+	}
+	fv := func(s string) float64 {
+		v, e := util.FormatVolume(s)
+		if e != nil {
+			ferr = e
+		}
+		return parseFloat(v)
+	}
 
-	msg, _ := json.Marshal(map[string]interface{}{
+	msg, err := json.Marshal(map[string]interface{}{
 		"type": "candle_update",
 		"data": map[string]interface{}{
 			"poolAddress":     event.PoolAddress,
 			"timeframe":       event.Timeframe,
 			"candleStart":     event.CandleStart,
-			"open":            parseFloat(o),
-			"high":            parseFloat(hh),
-			"low":             parseFloat(l),
-			"close":           parseFloat(c),
-			"volumeUsdl":      parseFloat(vu),
-			"volumeToken":     parseFloat(vt),
-			"buyVolumeUsdl":   parseFloat(bv),
-			"sellVolumeUsdl":  parseFloat(sv),
+			"open":            fp(event.Open),
+			"high":            fp(event.High),
+			"low":             fp(event.Low),
+			"close":           fp(event.Close),
+			"volumeUsdl":      fv(event.VolumeUsdl),
+			"volumeToken":     fv(event.VolumeToken),
+			"buyVolumeUsdl":   fv(event.BuyVolumeUsdl),
+			"sellVolumeUsdl":  fv(event.SellVolumeUsdl),
 			"tradeCount":      event.TradeCount,
 			"uniqueTraders":   event.UniqueTraders,
 			"largeTradeCount": event.LargeTradeCount,
-			"mcapOpen":        parseFloat(mo),
-			"mcapHigh":        parseFloat(mh),
-			"mcapLow":         parseFloat(ml),
-			"mcapClose":       parseFloat(mc),
+			"mcapOpen":        fv(event.McapOpen),
+			"mcapHigh":        fv(event.McapHigh),
+			"mcapLow":         fv(event.McapLow),
+			"mcapClose":       fv(event.McapClose),
 		},
 	})
+	if ferr != nil {
+		h.logger.Warn("ws: candle field format error, using zero", slog.String("err", ferr.Error()))
+	}
+	if err != nil {
+		h.logger.Error("ws: marshal candle update", slog.String("err", err.Error()))
+		return
+	}
 
 	key := h.subKey(event.PoolAddress, event.Timeframe)
 	h.mu.RLock()
@@ -266,16 +276,23 @@ func (h *wsHub) writePump(c *clientSub) {
 	for {
 		select {
 		case msg := <-c.send:
-			_ = c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+			if err := c.conn.SetWriteDeadline(time.Now().Add(writeWait)); err != nil {
+				return
+			}
 			if err := c.conn.WriteMessage(websocket.TextMessage, msg); err != nil {
 				return
 			}
 		case <-ticker.C:
-			ping, _ := json.Marshal(map[string]interface{}{
+			ping, err := json.Marshal(map[string]interface{}{
 				"type": "ping",
 				"ts":   time.Now().UnixMilli(),
 			})
-			_ = c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+			if err != nil {
+				continue
+			}
+			if err := c.conn.SetWriteDeadline(time.Now().Add(writeWait)); err != nil {
+				return
+			}
 			if err := c.conn.WriteMessage(websocket.TextMessage, ping); err != nil {
 				return
 			}
@@ -300,13 +317,13 @@ func (h *wsHub) handleWS(w http.ResponseWriter, r *http.Request) {
 	h.mu.Lock()
 	if len(h.clients) >= h.maxConns {
 		h.mu.Unlock()
-		_ = conn.WriteMessage(websocket.TextMessage, []byte(`{"type":"error","message":"Server at capacity"}`))
+		_ = conn.WriteMessage(websocket.TextMessage, []byte(`{"type":"error","message":"Server at capacity"}`)) //nolint:errcheck // best-effort capacity notice; the connection is closed immediately after
 		_ = conn.Close()
 		return
 	}
 	if h.ipCounts[clientIP] >= h.maxPerIP {
 		h.mu.Unlock()
-		_ = conn.WriteMessage(websocket.TextMessage, []byte(`{"type":"error","message":"Too many connections from this IP"}`))
+		_ = conn.WriteMessage(websocket.TextMessage, []byte(`{"type":"error","message":"Too many connections from this IP"}`)) //nolint:errcheck // best-effort limit notice; the connection is closed immediately after
 		_ = conn.Close()
 		return
 	}
@@ -340,11 +357,12 @@ func (h *wsHub) handleWS(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	// Send welcome message.
-	welcome, _ := json.Marshal(map[string]interface{}{
+	if welcome, err := json.Marshal(map[string]interface{}{
 		"type":    "connected",
 		"message": `Send { type: "subscribe", pools: ["0x..."], timeframes: ["1m"] } to start receiving candle updates`,
-	})
-	h.enqueue(sub, welcome)
+	}); err == nil {
+		h.enqueue(sub, welcome)
+	}
 
 	for {
 		_, raw, err := conn.ReadMessage()
@@ -358,8 +376,9 @@ func (h *wsHub) handleWS(w http.ResponseWriter, r *http.Request) {
 			Timeframes []string `json:"timeframes"`
 		}
 		if err := json.Unmarshal(raw, &msg); err != nil {
-			errMsg, _ := json.Marshal(map[string]string{"type": "error", "message": "Invalid JSON"})
-			h.enqueue(sub, errMsg)
+			if errMsg, mErr := json.Marshal(map[string]string{"type": "error", "message": "Invalid JSON"}); mErr == nil {
+				h.enqueue(sub, errMsg)
+			}
 			continue
 		}
 
@@ -374,12 +393,13 @@ func (h *wsHub) handleWS(w http.ResponseWriter, r *http.Request) {
 			}
 			h.indexClient(sub)
 			h.mu.Unlock()
-			resp, _ := json.Marshal(map[string]interface{}{
+			if resp, err := json.Marshal(map[string]interface{}{
 				"type":       "subscribed",
 				"pools":      keys(sub.pools),
 				"timeframes": keys(sub.timeframes),
-			})
-			h.enqueue(sub, resp)
+			}); err == nil {
+				h.enqueue(sub, resp)
+			}
 
 		case "unsubscribe":
 			h.mu.Lock()
@@ -391,16 +411,18 @@ func (h *wsHub) handleWS(w http.ResponseWriter, r *http.Request) {
 			}
 			h.indexClient(sub)
 			h.mu.Unlock()
-			resp, _ := json.Marshal(map[string]interface{}{
+			if resp, err := json.Marshal(map[string]interface{}{
 				"type":       "unsubscribed",
 				"pools":      keys(sub.pools),
 				"timeframes": keys(sub.timeframes),
-			})
-			h.enqueue(sub, resp)
+			}); err == nil {
+				h.enqueue(sub, resp)
+			}
 
 		case "ping":
-			pong, _ := json.Marshal(map[string]string{"type": "pong"})
-			h.enqueue(sub, pong)
+			if pong, err := json.Marshal(map[string]string{"type": "pong"}); err == nil {
+				h.enqueue(sub, pong)
+			}
 		}
 	}
 }
@@ -414,7 +436,10 @@ func keys(m map[string]struct{}) []string {
 }
 
 func parseFloat(s string) float64 {
-	f, _ := strconv.ParseFloat(s, 64)
+	f, err := strconv.ParseFloat(s, 64)
+	if err != nil {
+		return 0
+	}
 	return f
 }
 
