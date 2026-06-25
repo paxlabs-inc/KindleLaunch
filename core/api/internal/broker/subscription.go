@@ -102,7 +102,7 @@ func (s *Subscription) size() int { return len(s.queue) + len(s.pending) }
 // deliver enqueues a frame produced by the broker. It never blocks: on overflow
 // the subscription is evicted instead. Coalesced frames overwrite the latest
 // value for their key.
-func (s *Subscription) deliver(m outMessage) {
+func (s *Subscription) deliver(m OutMessage) {
 	if s.closed.Load() || s.evicted.Load() {
 		return
 	}

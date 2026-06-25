@@ -37,11 +37,11 @@ type Limiter struct {
 }
 
 // NewLimiter builds a Limiter allowing at most max concurrent requests.
-func NewLimiter(max int) *Limiter {
-	if max <= 0 {
-		max = 10000
+func NewLimiter(maxConcurrent int) *Limiter {
+	if maxConcurrent <= 0 {
+		maxConcurrent = 10000
 	}
-	return &Limiter{sem: make(chan struct{}, max), max: max}
+	return &Limiter{sem: make(chan struct{}, maxConcurrent), max: maxConcurrent}
 }
 
 // Middleware enforces the in-flight cap, load-shedding with 503 + Retry-After

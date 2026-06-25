@@ -200,8 +200,12 @@ func drain(w http.ResponseWriter, rc *http.ResponseController, sub *broker.Subsc
 // writeRaw writes b under a bounded write deadline and flushes. Returns false on
 // any error (deadline exceeded => slow client => teardown).
 func writeRaw(w http.ResponseWriter, rc *http.ResponseController, b []byte) bool {
-	_ = rc.SetWriteDeadline(time.Now().Add(writeWait))
-	if _, err := w.Write(b); err != nil {
+	if err := rc.SetWriteDeadline(time.Now().Add(writeWait)); err != nil {
+		return false
+	}
+	// G705 false positive: this is a text/event-stream (not HTML); b is a
+	// server-generated broker frame, never reflected client input.
+	if _, err := w.Write(b); err != nil { //nolint:gosec // SSE stream, not HTML
 		return false
 	}
 	return rc.Flush() == nil

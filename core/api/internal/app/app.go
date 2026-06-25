@@ -55,7 +55,7 @@ type App struct {
 
 // New builds every component. core/api owns no schema and runs no migrations: it
 // reads the schemas the core/* services own (invariant i2).
-func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*App, error) {
+func New(ctx context.Context, cfg *config.Config, logger *slog.Logger) (*App, error) {
 	pool, err := shareddb.NewPool(ctx, cfg.DatabaseURL, shareddb.PoolOptions{
 		MaxConns:         40,
 		MaxConnIdleTime:  30 * time.Second,
@@ -113,7 +113,7 @@ func New(ctx context.Context, cfg config.Config, logger *slog.Logger) (*App, err
 	app := &App{
 		Router:  router,
 		Broker:  br,
-		cfg:     cfg,
+		cfg:     *cfg,
 		logger:  logger,
 		pool:    pool,
 		redis:   rdb,
@@ -197,7 +197,7 @@ func Run(parent context.Context) error {
 	ctx, cancel := context.WithCancel(parent)
 	defer cancel()
 
-	app, err := New(ctx, cfg, logger)
+	app, err := New(ctx, &cfg, logger)
 	if err != nil {
 		return err
 	}

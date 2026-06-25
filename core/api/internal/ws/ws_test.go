@@ -43,7 +43,10 @@ func newServer(t *testing.T, opts ws.Options) (*httptest.Server, *broker.Broker)
 func dial(t *testing.T, srv *httptest.Server, path string) *websocket.Conn {
 	t.Helper()
 	url := "ws" + strings.TrimPrefix(srv.URL, "http") + path
-	c, _, err := websocket.DefaultDialer.Dial(url, nil)
+	c, resp, err := websocket.DefaultDialer.Dial(url, nil)
+	if resp != nil {
+		defer resp.Body.Close()
+	}
 	if err != nil {
 		t.Fatalf("dial %s: %v", path, err)
 	}
@@ -179,6 +182,9 @@ func TestWS_PerIPConnectionCap(t *testing.T) {
 	// Second from the same IP is rejected before the upgrade with 503.
 	url := "ws" + strings.TrimPrefix(srv.URL, "http") + "/ws"
 	_, resp, err := websocket.DefaultDialer.Dial(url, nil)
+	if resp != nil {
+		defer resp.Body.Close()
+	}
 	if err == nil {
 		t.Fatal("expected second same-IP connection to be rejected")
 	}

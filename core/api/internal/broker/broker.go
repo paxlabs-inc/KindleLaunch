@@ -24,7 +24,7 @@ import (
 
 // TransformFunc converts a raw channel payload into a client frame. It returns
 // ok=false to drop a malformed payload. DefaultTransform is the production impl.
-type TransformFunc func(channel string, payload []byte) (outMessage, bool)
+type TransformFunc func(channel string, payload []byte) (OutMessage, bool)
 
 // Broker fans Redis pub/sub events out to client Subscriptions.
 type Broker struct {

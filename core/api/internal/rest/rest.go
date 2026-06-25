@@ -148,7 +148,8 @@ func marshalUDFHistory(rows []store.CandleRow) []byte {
 	l := make([]float64, n)
 	c := make([]float64, n)
 	v := make([]float64, n)
-	for i, row := range rows {
+	for i := range rows {
+		row := &rows[i]
 		t[i] = row.CandleStart
 		o[i] = fprice(row.Open)
 		h[i] = fprice(row.High)
@@ -164,7 +165,10 @@ func fprice(raw string) float64 {
 	if err != nil {
 		return 0
 	}
-	f, _ := strconv.ParseFloat(s, 64)
+	f, err := strconv.ParseFloat(s, 64)
+	if err != nil {
+		return 0
+	}
 	return f
 }
 
@@ -173,7 +177,10 @@ func fvol(raw string) float64 {
 	if err != nil {
 		return 0
 	}
-	f, _ := strconv.ParseFloat(s, 64)
+	f, err := strconv.ParseFloat(s, 64)
+	if err != nil {
+		return 0
+	}
 	return f
 }
 
@@ -191,11 +198,17 @@ func parseIntDefault(raw string, def int) int {
 }
 
 func parseInt64(raw string) int64 {
-	n, _ := strconv.ParseInt(raw, 10, 64)
+	n, err := strconv.ParseInt(raw, 10, 64)
+	if err != nil {
+		return 0
+	}
 	return n
 }
 
 func mustJSON(v any) []byte {
-	b, _ := json.Marshal(v)
+	b, err := json.Marshal(v)
+	if err != nil {
+		return []byte("{}")
+	}
 	return b
 }

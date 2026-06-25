@@ -168,7 +168,7 @@ func (h *Hub) handle(fixedChannel string) http.HandlerFunc {
 		// A wildcard/candles connection has an implicit channel; a general one
 		// starts subscribed to nothing until it sends a subscribe frame.
 		c.sub = h.broker.Subscribe(c.filter(), h.sendBuffer)
-		c.run()
+		c.run(r.Context())
 	}
 }
 
@@ -195,8 +195,8 @@ func (c *wsConn) filter() broker.Filter {
 	return broker.Filter{Channels: cloneSet(c.channels), Pools: pools}
 }
 
-func (c *wsConn) run() {
-	ctx, cancel := context.WithCancel(context.Background())
+func (c *wsConn) run(ctx context.Context) {
+	ctx, cancel := context.WithCancel(ctx)
 	defer func() {
 		cancel()
 		c.sub.Close()
@@ -331,7 +331,9 @@ func (c *wsConn) drain() bool {
 }
 
 func (c *wsConn) write(b []byte) bool {
-	_ = c.conn.SetWriteDeadline(time.Now().Add(writeWait))
+	if err := c.conn.SetWriteDeadline(time.Now().Add(writeWait)); err != nil {
+		return false
+	}
 	return c.conn.WriteMessage(websocket.TextMessage, b) == nil
 }
 
@@ -365,7 +367,10 @@ func setKeys(in map[string]struct{}) []string {
 }
 
 func mustJSON(v any) []byte {
-	b, _ := json.Marshal(v)
+	b, err := json.Marshal(v)
+	if err != nil {
+		return []byte("{}")
+	}
 	return b
 }
 

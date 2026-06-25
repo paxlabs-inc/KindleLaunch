@@ -128,12 +128,12 @@ func (c *Config) Validate() error {
 }
 
 // RateLimitWindow returns the rate-limit window as a time.Duration.
-func (c Config) RateLimitWindow() time.Duration {
+func (c *Config) RateLimitWindow() time.Duration {
 	return time.Duration(c.RateLimitWindowSec) * time.Second
 }
 
 // CoalesceFlush returns the coalescing window as a time.Duration.
-func (c Config) CoalesceFlush() time.Duration {
+func (c *Config) CoalesceFlush() time.Duration {
 	return time.Duration(c.CoalesceFlushMS) * time.Millisecond
 }
 

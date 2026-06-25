@@ -50,7 +50,7 @@ func newApp(t *testing.T) (*httptest.Server, *goredis.Client, *pgxpool.Pool) {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
-	a, err := app.New(ctx, cfg, logger)
+	a, err := app.New(ctx, &cfg, logger)
 	if err != nil {
 		cancel()
 		t.Fatalf("app.New: %v", err)

@@ -70,8 +70,7 @@ func (c *Cache) GetOrFetch(ctx context.Context, key string, ttl time.Duration, f
 
 	c.mu.Lock()
 	if el, ok := c.items[key]; ok {
-		e := el.Value.(*entry)
-		if now.Before(e.expires) {
+		if e, ok := el.Value.(*entry); ok && now.Before(e.expires) {
 			c.ll.MoveToFront(el)
 			b, et := e.body, e.etag
 			c.hits++
@@ -111,10 +110,11 @@ func (c *Cache) GetOrFetch(ctx context.Context, key string, ttl time.Duration, f
 // storeLocked inserts/refreshes an entry and evicts the LRU tail if over cap.
 func (c *Cache) storeLocked(key string, body []byte, etag string, expires time.Time) {
 	if el, ok := c.items[key]; ok {
-		e := el.Value.(*entry)
-		e.body, e.etag, e.expires = body, etag, expires
-		c.ll.MoveToFront(el)
-		return
+		if e, ok := el.Value.(*entry); ok {
+			e.body, e.etag, e.expires = body, etag, expires
+			c.ll.MoveToFront(el)
+			return
+		}
 	}
 	el := c.ll.PushFront(&entry{key: key, body: body, etag: etag, expires: expires})
 	c.items[key] = el
@@ -127,7 +127,9 @@ func (c *Cache) storeLocked(key string, body []byte, etag string, expires time.T
 
 func (c *Cache) removeElement(el *list.Element) {
 	c.ll.Remove(el)
-	delete(c.items, el.Value.(*entry).key)
+	if e, ok := el.Value.(*entry); ok {
+		delete(c.items, e.key)
+	}
 }
 
 // Len returns the number of cached entries.
@@ -179,7 +181,9 @@ func ServeJSON(w http.ResponseWriter, r *http.Request, body []byte, ttl time.Dur
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	_, _ = w.Write(body)
+	if _, err := w.Write(body); err != nil {
+		return
+	}
 }
 
 // ETag computes a strong ETag from the payload (quoted hex of a truncated

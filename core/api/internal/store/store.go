@@ -212,7 +212,7 @@ func (s *Store) PoolStatsJSON(ctx context.Context, pool string) (json.RawMessage
 	if err != nil {
 		return nil, false, fmt.Errorf("store: marshal pool stats: %w", err)
 	}
-	_ = s.rdb.Set(ctx, statsKey(pool), payload, statsCacheTTL).Err()
+	s.rdb.Set(ctx, statsKey(pool), payload, statsCacheTTL)
 	return payload, true, nil
 }
 
@@ -229,7 +229,10 @@ func (s *Store) StatsBatch(ctx context.Context, pools []string) (map[string]json
 	for i, p := range pools {
 		cmds[i] = pipe.Get(ctx, statsKey(p))
 	}
-	_, _ = pipe.Exec(ctx) // redis.Nil per-miss is expected, handled below
+	// Pipeline errors (incl. redis.Nil on per-key misses, or Redis being
+	// unavailable) are intentionally ignored: each command's result is inspected
+	// below and anything not served from cache falls through to the DB query.
+	_, _ = pipe.Exec(ctx) //nolint:errcheck // best-effort warm read; see comment above
 
 	var missed []string
 	for i, p := range pools {
@@ -259,7 +262,7 @@ func (s *Store) StatsBatch(ctx context.Context, pools []string) (map[string]json
 			return nil, fmt.Errorf("store: marshal stats batch: %w", err)
 		}
 		result[r.PoolAddress] = payload
-		_ = s.rdb.Set(ctx, statsKey(r.PoolAddress), payload, statsCacheTTL).Err()
+		s.rdb.Set(ctx, statsKey(r.PoolAddress), payload, statsCacheTTL)
 	}
 	return result, rows.Err()
 }
@@ -332,7 +335,10 @@ func (s *Store) Rankings(ctx context.Context, category string, offset, limit int
 	}
 	items := make([]RankedItem, 0, len(entries))
 	for i, z := range entries {
-		addr, _ := z.Member.(string)
+		addr, ok := z.Member.(string)
+		if !ok {
+			continue
+		}
 		items = append(items, RankedItem{PoolAddress: addr, Score: z.Score, Rank: offset + i + 1})
 	}
 	total, err := s.rdb.ZCard(ctx, key).Result()

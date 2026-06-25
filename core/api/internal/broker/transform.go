@@ -8,10 +8,10 @@ import (
 	"github.com/Sidiora-Technologies/KindleLaunch/shared/util"
 )
 
-// outMessage is a fan-out frame: the pre-marshaled client bytes plus the routing
+// OutMessage is a fan-out frame: the pre-marshaled client bytes plus the routing
 // metadata the broker/subscription need (pool for filtering, coalesceKey for
 // backpressure; an empty coalesceKey marks a must-deliver frame).
-type outMessage struct {
+type OutMessage struct {
 	pool        string
 	coalesceKey string
 	bytes       []byte
@@ -49,7 +49,7 @@ type routing struct {
 	Timeframe   string `json:"timeframe"`
 }
 
-// DefaultTransform converts a raw Redis channel payload into an outMessage.
+// DefaultTransform converts a raw Redis channel payload into an OutMessage.
 //
 // For the candle channel it reproduces the trading-charts WS frame byte-shape
 // (type "candle_update" with numeric OHLCV/mcap fields formatted from the text
@@ -59,10 +59,10 @@ type routing struct {
 //	{"type": <event>, "channel": <redis-channel>, "pool": <addr>, "data": <raw>}
 //
 // ok is false when the payload is not valid JSON (the broker then drops it).
-func DefaultTransform(channel string, payload []byte) (outMessage, bool) {
+func DefaultTransform(channel string, payload []byte) (OutMessage, bool) {
 	var r routing
 	if err := json.Unmarshal(payload, &r); err != nil {
-		return outMessage{}, false
+		return OutMessage{}, false
 	}
 
 	typ, known := channelType[channel]
@@ -81,9 +81,9 @@ func DefaultTransform(channel string, payload []byte) (outMessage, bool) {
 	if channel == constants.ChannelCandleUpdate {
 		bytes, ok := candleFrame(payload)
 		if !ok {
-			return outMessage{}, false
+			return OutMessage{}, false
 		}
-		return outMessage{pool: r.PoolAddress, coalesceKey: coalesceKey, bytes: bytes}, true
+		return OutMessage{pool: r.PoolAddress, coalesceKey: coalesceKey, bytes: bytes}, true
 	}
 
 	frame, err := json.Marshal(map[string]any{
@@ -93,9 +93,9 @@ func DefaultTransform(channel string, payload []byte) (outMessage, bool) {
 		"data":    json.RawMessage(payload),
 	})
 	if err != nil {
-		return outMessage{}, false
+		return OutMessage{}, false
 	}
-	return outMessage{pool: r.PoolAddress, coalesceKey: coalesceKey, bytes: frame}, true
+	return OutMessage{pool: r.PoolAddress, coalesceKey: coalesceKey, bytes: frame}, true
 }
 
 // candlePayload mirrors the candles:update payload the indexer/charts service
@@ -164,7 +164,10 @@ func fprice(raw string) float64 {
 	if err != nil {
 		return 0
 	}
-	f, _ := strconv.ParseFloat(s, 64)
+	f, err := strconv.ParseFloat(s, 64)
+	if err != nil {
+		return 0
+	}
 	return f
 }
 
@@ -175,6 +178,9 @@ func fvol(raw string) float64 {
 	if err != nil {
 		return 0
 	}
-	f, _ := strconv.ParseFloat(s, 64)
+	f, err := strconv.ParseFloat(s, 64)
+	if err != nil {
+		return 0
+	}
 	return f
 }
